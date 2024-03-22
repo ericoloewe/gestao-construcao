@@ -1,95 +1,64 @@
+"use client";
+
 import Image from "next/image";
 import "./page.scss";
+import { useState } from "react";
+import { chain } from "mathjs";
 
 export default function Home() {
   return (
-    <main className="main">
-      <div className="description">
-        <p>
-          Get started by editing&nbsp;
-          <code className="code">src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="vercelLogo"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="center">
-        <Image
-          className="logo"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="grid">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="card"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="card"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="card"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="card"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
+    <main className="main container">
+      <h1>Calculo de construção</h1>
+      <Terreno mesesAteVender={26} />
     </main>
   );
 }
+function Terreno({ mesesAteVender }: any) {
+  const [area, setArea] = useState<number>(0);
+  const [valor, setValor] = useState<number>(0);
+  const [itbi, setItbi] = useState<number>(0);
+  const [escrituraERegistro, setEscrituraERegistro] = useState<number>(0);
+  const [iptu, setIptu] = useState<number>(0);
+
+  return (
+    <section className="card valor-terreno">
+      <div className="card-header">
+        Terreno
+      </div>
+      <div className="row">
+        <div className="mb-3 col-md">
+          <label className="form-label">ÁREA DO TERRENO</label>
+          <input type="text" className="form-control" placeholder="300,00 m²" value={area} onChange={e => setArea(Number(e.target.value))} />
+        </div>
+        <div className="mb-3 col-md">
+          <label className="form-label">VALOR DE AQUISIÇÃO </label>
+          <input type="text" className="form-control" placeholder="R$ 100.000,00" value={valor} onChange={e => setValor(Number(e.target.value))} />
+        </div>
+        <div className="mb-3 col-md-2">
+          <label className="form-label">PREÇO DO M²</label>
+          <h6>R$ {chain(valor).divide(area).format(2).done()} / m²</h6>
+        </div>
+      </div>
+      <div className="row">
+        <div className="mb-3 col-md">
+          <label className="form-label">ITBI</label>
+          <input type="text" className="form-control" placeholder="2,00%" value={itbi} onChange={e => setItbi(Number(e.target.value))} />
+        </div>
+        <div className="mb-3 col-md">
+          <label className="form-label">ESCRITURA E REGISTRO</label>
+          <input type="text" className="form-control" placeholder="1,00%" value={escrituraERegistro} onChange={e => setEscrituraERegistro(Number(e.target.value))} />
+        </div>
+        <div className="mb-3 col-md">
+          <label className="form-label">IPTU</label>
+          <input type="text" className="form-control" placeholder="R$ 1.200,00/ano" value={iptu} onChange={e => setIptu(Number(e.target.value))} />
+        </div>
+      </div>
+      <div className="row mb-3">
+        <label className="form-label">CUSTO TOTAL TERRENO</label>
+        <h6>R$ {chain(valor).add(chain(valor).multiply(chain(itbi).add(escrituraERegistro).done()).add(chain(iptu).multiply(chain(mesesAteVender).divide(12).done()).done()).done()).format(2).done()}</h6>
+        {/* <h6>R$ {(valor + (valor * (itbi + escrituraERegistro)) + (iptu * (mesesAteVender / 12))) || '105.600,00'}</h6> */}
+      </div>
+    </section>
+  )
+}
+
