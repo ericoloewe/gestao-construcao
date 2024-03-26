@@ -3,7 +3,7 @@
 import "./page.scss";
 import { useState } from "react";
 import { add, multiply, divide, format } from "mathjs";
-import { useIMask } from "react-imask";
+import extenso from "extenso";
 
 export default function Home() {
   return (
@@ -28,29 +28,30 @@ function Terreno({ mesesAteVender }: any) {
       <div className="row">
         <div className="mb-3 col-md">
           <label className="form-label">ÁREA DO TERRENO</label>
-          <Input mask="# m²" onChange={setArea} isNumber={true} />
+          <Input onChange={setArea} type="number" groupSymbolRight="m²" />
         </div>
         <div className="mb-3 col-md">
           <label className="form-label">VALOR DE AQUISIÇÃO </label>
-          <Input mask="R$ #" onChange={setValor} isNumber={true} />
+          <Input onChange={setValor} type="number" min="1" step="any" groupSymbolLeft="R$" />
+          <div className="form-text">{!!valor && extenso(valor, { mode: 'currency' })}</div>
         </div>
         <div className="mb-3 col-md-2">
           <label className="form-label">PREÇO DO M²</label>
-          <h6>R$ {divide(valor, area)} / m²</h6>
+          <h6>R$ {area && valor && format(divide(valor, area), 2)} / m²</h6>
         </div>
       </div>
       <div className="row">
         <div className="mb-3 col-md">
           <label className="form-label">ITBI</label>
-          <input type="text" className="form-control" placeholder="2,00%" value={itbi} onChange={e => setItbi(Number(e.target.value))} />
+          <Input onChange={setItbi} type="number" min="1" step="any" groupSymbolLeft="%" />
         </div>
         <div className="mb-3 col-md">
           <label className="form-label">ESCRITURA E REGISTRO</label>
-          <input type="text" className="form-control" placeholder="1,00%" value={escrituraERegistro} onChange={e => setEscrituraERegistro(Number(e.target.value))} />
+          <Input onChange={setEscrituraERegistro} type="number" min="1" step="any" groupSymbolLeft="%" />
         </div>
         <div className="mb-3 col-md">
           <label className="form-label">IPTU</label>
-          <input type="text" className="form-control" placeholder="R$ 1.200,00/ano" value={iptu} onChange={e => setIptu(Number(e.target.value))} />
+          <Input onChange={setIptu} type="number" min="1" step="any" groupSymbolLeft="R$" groupSymbolRight="ano" />
         </div>
       </div>
       <div className="row mb-3">
@@ -62,15 +63,25 @@ function Terreno({ mesesAteVender }: any) {
   )
 }
 
-function Input({ mask, onChange, isNumber }: any) {
-  const { ref } = useIMask({ mask, radix: '.', lazy: false, blocks: { '#': { mask: Number, expose: true, }, } }, { onAccept: onChangeInput });
+function Input(props: any) {
+  const { onChange, isNumber, groupSymbolLeft, groupSymbolRight, ...otherProps } = props;
 
-  function onChangeInput(value: string) {
-    if (isNumber)
-      onChange(Number(value.replaceAll(',', '.')));
+  function onChangeInput(event: any) {
+    const { value } = event.target
+
+    if (props.type === 'number')
+      onChange(Number(value));
     else
       onChange(value);
   }
 
-  return <input ref={ref as any} className="form-control" />;
+  const input = <input className="form-control" onChange={onChangeInput} {...otherProps} />;
+
+  return groupSymbolLeft || groupSymbolRight ? (
+    <div className="input-group mb-3">
+      {groupSymbolLeft && <span className="input-group-text">{groupSymbolLeft}</span>}
+      {input}
+      {groupSymbolRight && <span className="input-group-text">{groupSymbolRight}</span>}
+    </div>
+  ) : input;
 }
