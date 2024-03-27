@@ -32,3 +32,22 @@ body,
   width: 4rem;
   height: 4rem;
 }
+
+body p.logo {
+  color: #65a147;
+  font-size: large;
+  font-weight: bold;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.logo-link {
+  > svg {
+    width: 50px;
+    height: 50px;
+  }
+}

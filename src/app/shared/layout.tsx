@@ -2,6 +2,7 @@
 
 import BigNumber from "bignumber.js";
 import { AppProviders } from "../contexts";
+import { Header } from "../components/header";
 
 BigNumber.config({
   FORMAT: {
@@ -14,6 +15,9 @@ BigNumber.config({
 
 export function Layout({ children }: any) {
   return (
-    <AppProviders>{children}</AppProviders>
+    <AppProviders>
+      <Header />
+      {children}
+    </AppProviders>
   );
 }

@@ -2,7 +2,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import BigNumber from 'bignumber.js';
 import extenso from "extenso";
-import { Input } from "./input";
+import { Input } from "../../components/input";
 
 interface CustomProps {
   mesesAteVender: number
