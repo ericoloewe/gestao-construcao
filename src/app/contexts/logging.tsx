@@ -1,6 +1,8 @@
+"use client";
+
 import React, { createContext, useState, useEffect } from "react"
 import { useEnv } from "./env";
-import PouchDb from "pouchdb-browser";
+// import PouchDb from "pouchdb-browser";
 
 
 const LoggingContext = createContext({
@@ -17,25 +19,30 @@ enum LoggingType {
   debug = "debug",
 }
 
-const db = new PouchDb('logging');
-
-function createLogging(type: LoggingType) {
-  return function (...args: any[]) {
-    consoleBkp[type](...args);
-
-    saveLogInDb(type, args);
-  }
-}
-
-function saveLogInDb(type: LoggingType, args: any[]) {
-  db.put({ type, args });
-}
-
 export function LoggingProvider(props: any) {
   const { logLevel } = useEnv()
   const [logger, setLogger] = useState<any>();
+  let db: PouchDB.Database = {} as any;
 
   useEffect(() => {
+    startLogging();
+  }, []);
+
+  useEffect(() => {
+    if (Object.keys(logger || {}).length > 0) {
+      window.console.log = logger.log;
+      window.console.info = logger.info;
+      window.console.debug = logger.debug;
+      window.console.error = logger.error;
+      window.console.warn = logger.warn;
+    }
+  }, [logger]);
+
+  async function startLogging() {
+    const PouchDB = (await import('pouchdb-browser')).default as any;
+    
+    db = new PouchDB('logging');
+
     const newLogger = { ...consoleBkp };
 
     newLogger.log = createLogging(LoggingType.log);
@@ -53,17 +60,20 @@ export function LoggingProvider(props: any) {
     };
 
     setLogger(newLogger);
-  }, []);
+  }
 
-  useEffect(() => {
-    if (Object.keys(logger).length > 0) {
-      window.console.log = logger.log;
-      window.console.info = logger.info;
-      window.console.debug = logger.debug;
-      window.console.error = logger.error;
-      window.console.warn = logger.warn;
+
+  function createLogging(type: LoggingType) {
+    return function (...args: any[]) {
+      consoleBkp[type](...args);
+
+      saveLogInDb(type, args);
     }
-  }, [logger]);
+  }
+
+  function saveLogInDb(type: LoggingType, args: any[]) {
+    db.post({ type, args });
+  }
 
   return (
     <LoggingContext.Provider

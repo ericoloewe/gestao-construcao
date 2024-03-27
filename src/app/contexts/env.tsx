@@ -1,6 +1,8 @@
+"use client";
+
 import React, { createContext, useState, useEffect } from "react"
 
-const { version: packageVersion } = require('../../package.json');
+const { version: packageVersion } = require('../../../package.json');
 
 
 const EnvContext = createContext({

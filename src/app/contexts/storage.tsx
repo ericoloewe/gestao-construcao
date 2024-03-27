@@ -1,12 +1,23 @@
+"use client";
+
 import React, { createContext, useState, useEffect } from "react"
-import PouchDb from 'pouchdb-browser';
 
 const StorageContext = createContext({
 });
 
-const db = new PouchDb('default');
 
 export function StorageProvider(props: any) {
+  let db: PouchDB.Database = {} as any;
+
+  useEffect(() => {
+    startStorage();
+  }, []);
+
+  async function startStorage() {
+    const PouchDB = (await import('pouchdb-browser')).default as any;
+
+    db = new PouchDB('default');
+  }
 
   async function add(id: string, doc: any) {
     return await db.put({

@@ -1,19 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.scss";
-import BigNumber from "bignumber.js";
-import { AppProviders } from "./contexts";
 
 const inter = Inter({ subsets: ["latin"] });
-
-BigNumber.config({
-  FORMAT: {
-    // decimal separator
-    decimalSeparator: ',',
-    // grouping separator of the integer part
-    groupSeparator: '.',
-  }
-})
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -27,9 +16,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <AppProviders>
-        <body className={inter.className}>{children}</body>
-      </AppProviders>
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }
