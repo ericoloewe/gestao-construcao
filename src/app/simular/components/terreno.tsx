@@ -24,11 +24,9 @@ export function Terreno({ mesesAteVender, onValorTotalTerrenoChange }: CustomPro
 
   }, [valor, itbi, escrituraERegistro, iptu, mesesAteVender]);
 
-
   useEffect(() => {
     onValorTotalTerrenoChange(valorTotal);
   }, [valorTotal]);
-
 
   return (
     <section className="card valor-terreno mb-3">
