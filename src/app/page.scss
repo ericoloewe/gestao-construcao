@@ -4,3 +4,16 @@
     padding: 10px 20px;
   }
 }
+
+.compra-terreno-parcelada {
+  .card-header {
+    border-bottom: none;
+  }
+
+  &.show {
+    .card-header {
+      border-bottom: var(--bs-card-border-width) solid
+        var(--bs-card-border-color);
+    }
+  }
+}
