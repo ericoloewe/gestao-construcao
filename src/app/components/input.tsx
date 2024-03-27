@@ -6,25 +6,28 @@ interface CustomProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<
   isPercent?: boolean,
   groupSymbolLeft?: string,
   groupSymbolRight?: string,
-  onChange: React.Dispatch<React.SetStateAction<any>>
+  onChange: React.Dispatch<React.SetStateAction<any>>,
+  value: any,
 }
 
 export function Input(props: CustomProps) {
-  const { onChange, isNumber, groupSymbolLeft, groupSymbolRight, isPercent, ...otherProps } = props;
+  const { onChange, isNumber, groupSymbolLeft, groupSymbolRight, isPercent, value, ...otherProps } = props;
+  const isInputNumber = props.type === 'number' || isNumber;
 
   function onChangeInput(event: any) {
     const { value } = event.target;
 
     if (isPercent)
       onChange(BigNumber(value).div(100));
-    else if (props.type === 'number' || isNumber)
+    else if (isInputNumber)
       onChange(BigNumber(value));
-
     else
       onChange(value);
   }
 
-  const input = <input className="form-control" onChange={onChangeInput} {...otherProps} />;
+  const inputValue = isInputNumber && value ? value.toNumber() : value;
+
+  const input = <input className="form-control" onChange={onChangeInput} value={inputValue} {...otherProps} />;
 
   return groupSymbolLeft || groupSymbolRight ? (
     <div className="input-group mb-3">

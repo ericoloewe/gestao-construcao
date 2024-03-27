@@ -1,7 +1,7 @@
 "use client";
 
 import BigNumber from "bignumber.js";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { createContext, useState, useEffect } from "react"
 import { AvailableCollections, useStorage } from "../contexts/storage";
 
@@ -35,6 +35,7 @@ const SimuladorContext = createContext<SimuladorContextType>({
 
 export function SimuladorProvider(props: any) {
   const searchParams = useSearchParams();
+  const router = useRouter()
   const [area, setArea] = useState<BigNumber>();
   const [valor, setValor] = useState<BigNumber>();
   const [itbi, setItbi] = useState<BigNumber>();
@@ -45,9 +46,33 @@ export function SimuladorProvider(props: any) {
   const [taxaDeJuros, setTaxaDeJuros] = useState<BigNumber>();
   const [mesDeInicio, setMesDeInicio] = useState<BigNumber>();
   const [prazo, setPrazo] = useState<BigNumber>();
-  const { add, update } = useStorage();
+  const { add, update, get, isDbOk } = useStorage();
 
-  function saveAll() {
+  useEffect(() => {
+    if (isDbOk)
+      load();
+  }, [isDbOk]);
+
+  async function load() {
+    const sim = searchParams.get('sim');
+
+    if (sim != null) {
+      const simulacao = await get(AvailableCollections.simulador, sim);
+
+      setArea(simulacao.area && BigNumber(simulacao.area));
+      setValor(simulacao.valor && BigNumber(simulacao.valor));
+      setItbi(simulacao.itbi && BigNumber(simulacao.itbi));
+      setEscrituraERegistro(simulacao.escrituraERegistro && BigNumber(simulacao.escrituraERegistro));
+      setIptu(simulacao.iptu && BigNumber(simulacao.iptu));
+      setValorTotal(simulacao.valorTotal && BigNumber(simulacao.valorTotal));
+      setValorEntrada(simulacao.valorEntrada && BigNumber(simulacao.valorEntrada));
+      setTaxaDeJuros(simulacao.taxaDeJuros && BigNumber(simulacao.taxaDeJuros));
+      setMesDeInicio(simulacao.mesDeInicio && BigNumber(simulacao.mesDeInicio));
+      setPrazo(simulacao.prazo && BigNumber(simulacao.prazo));
+    }
+  }
+
+  async function saveAll() {
     console.log('start save all');
     const sim = searchParams.get('sim');
     const simulacao = { area, valor, itbi, escrituraERegistro, iptu, valorTotal, valorEntrada, taxaDeJuros, mesDeInicio, prazo };
@@ -66,7 +91,10 @@ export function SimuladorProvider(props: any) {
       update(AvailableCollections.simulador, sim, simulacao)
     } else {
       console.log('start creating new');
-      add(AvailableCollections.simulador, simulacao);
+      const { id, ok } = await add(AvailableCollections.simulador, simulacao);
+
+      if (ok)
+        router.push(`/simular?sim=${id}`);
     }
 
     console.log('end save all');

@@ -36,11 +36,11 @@ export function Terreno({ mesesAteVender, onValorTotalTerrenoChange }: CustomPro
       <div className="row">
         <div className="mb-3 col-md">
           <label className="form-label">Área Do Terreno</label>
-          <Input onChange={setArea} type="number" groupSymbolRight="m²" />
+          <Input onChange={setArea} type="number" groupSymbolRight="m²" value={area} />
         </div>
         <div className="mb-3 col-md">
           <label className="form-label">Valor De Aquisição</label>
-          <Input onChange={setValor} type="number" min="1" groupSymbolLeft="R$" />
+          <Input onChange={setValor} type="number" min="1" groupSymbolLeft="R$" value={valor} />
           <div className="form-text">{!!valor && extenso(valor.integerValue().toNumber(), { mode: 'currency' })}</div>
         </div>
         <div className="mb-3 col-md-2">

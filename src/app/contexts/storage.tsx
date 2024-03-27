@@ -3,15 +3,17 @@
 import React, { createContext, useState, useEffect } from "react"
 
 interface StorageProviderContext {
-  add: (collectionName: AvailableCollections, doc: any) => Promise<void>
+  add: (collectionName: AvailableCollections, doc: any) => Promise<Promise<PouchDB.Core.Response>>
   update: (collectionName: AvailableCollections, id: string, doc: any) => Promise<void>
-  get: (collectionName: AvailableCollections, id: string) => Promise<void>
+  get: (collectionName: AvailableCollections, id: string) => Promise<PouchDB.Core.Document<any> & PouchDB.Core.GetMeta>
+  isDbOk: boolean
 }
 
 const StorageContext = createContext<StorageProviderContext>({
-  add: () => Promise.resolve(),
+  add: () => Promise.resolve({} as any),
   update: () => Promise.resolve(),
   get: () => Promise.resolve(),
+  isDbOk: false,
 });
 
 export enum AvailableCollections {
@@ -22,14 +24,19 @@ export enum AvailableCollections {
 const collections = {} as { [key: string]: PouchDB.Database };
 
 export function StorageProvider(props: any) {
-  let PouchDB: PouchDB.Static = {} as any;
+  const [isDbOk, setIsDbOk] = useState<boolean>();
+  const [dbMethod, setPouchDB] = useState<{ PouchDB: PouchDB.Static }>({ dbMethod: {} } as any);
+  // let PouchDB: PouchDB.Static = {} as any;
 
   useEffect(() => {
     startStorage();
   }, []);
 
   async function startStorage() {
-    PouchDB = (await import('pouchdb-browser')).default as any;
+    const PouchDB = (await import('pouchdb-browser')).default as any;
+
+    setPouchDB({ PouchDB });
+    setIsDbOk(true);
   }
 
   async function add(collectionName: AvailableCollections, doc: any) {
@@ -39,9 +46,13 @@ export function StorageProvider(props: any) {
   }
 
   async function update(collectionName: AvailableCollections, id: string, doc: any) {
-    return await getCollection(collectionName).put({
+    const collection = getCollection(collectionName);
+
+    const dbDoc = await collection.get(id);
+
+    collection.put({
+      ...dbDoc,
       ...doc,
-      "_id": id,
     });
   }
 
@@ -51,7 +62,7 @@ export function StorageProvider(props: any) {
 
   function getCollection(collectionName: AvailableCollections) {
     if (collections[collectionName] == null) {
-      collections[collectionName] = new PouchDB(collectionName);
+      collections[collectionName] = new dbMethod.PouchDB(collectionName);
     }
 
     return collections[collectionName];
@@ -63,6 +74,7 @@ export function StorageProvider(props: any) {
         add,
         update,
         get,
+        isDbOk,
       }}
       {...props} />
   )
