@@ -7,7 +7,6 @@
 @import "../../node_modules/bootstrap/scss/variables";
 @import "../../node_modules/bootstrap/scss/variables-dark";
 
-
 // 5. Include remainder of required parts
 @import "../../node_modules/bootstrap/scss/maps";
 @import "../../node_modules/bootstrap/scss/mixins";
@@ -22,3 +21,5 @@
 @import "../../node_modules/bootstrap/scss/grid";
 @import "../../node_modules/bootstrap/scss/helpers";
 @import "../../node_modules/bootstrap/scss/transitions";
+
+@import "_theme";
