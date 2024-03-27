@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import BigNumber from 'bignumber.js';
 import extenso from "extenso";
 import { Input } from "../../components/input";
+import { useSimulador } from "../context";
 
 interface CustomProps {
   mesesAteVender: number
@@ -10,12 +11,7 @@ interface CustomProps {
 }
 
 export function Terreno({ mesesAteVender, onValorTotalTerrenoChange }: CustomProps) {
-  const [area, setArea] = useState<BigNumber>();
-  const [valor, setValor] = useState<BigNumber>();
-  const [itbi, setItbi] = useState<BigNumber>();
-  const [escrituraERegistro, setEscrituraERegistro] = useState<BigNumber>();
-  const [iptu, setIptu] = useState<BigNumber>();
-  const [valorTotal, setValorTotal] = useState<BigNumber>();
+  const { area, setArea, valor, setValor, itbi, setItbi, escrituraERegistro, setEscrituraERegistro, iptu, setIptu, valorTotal, setValorTotal, } = useSimulador();
 
   useEffect(() => {
     if (valor && itbi && escrituraERegistro && iptu && mesesAteVender) {

@@ -3,16 +3,14 @@ import { useEffect, useState } from "react";
 import BigNumber from 'bignumber.js';
 import extenso from "extenso";
 import { Input } from "../../components/input";
+import { useSimulador } from "../context";
 
 interface CustomProps {
   valorTotalTerreno?: BigNumber
 }
 
 export function CompraTerrenoParcelada({ valorTotalTerreno }: CustomProps) {
-  const [valorEntrada, setValorEntrada] = useState<BigNumber>();
-  const [taxaDeJuros, setTaxaDeJuros] = useState<BigNumber>();
-  const [mesDeInicio, setMesDeInicio] = useState<BigNumber>();
-  const [prazo, setPrazo] = useState<BigNumber>();
+  const { valorEntrada, setValorEntrada, taxaDeJuros, setTaxaDeJuros, mesDeInicio, setMesDeInicio, prazo, setPrazo, } = useSimulador();
   const [show, setShow] = useState<boolean>(false);
 
   const saldo = valorTotalTerreno && valorEntrada ? valorTotalTerreno.minus(valorEntrada) : null;
