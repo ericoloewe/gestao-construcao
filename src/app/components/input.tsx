@@ -1,7 +1,15 @@
 "use client";
 import BigNumber from 'bignumber.js';
 
-export function Input(props: any) {
+interface CustomProps extends React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> {
+  isNumber?: boolean,
+  isPercent?: boolean,
+  groupSymbolLeft?: string,
+  groupSymbolRight?: string,
+  onChange: React.Dispatch<React.SetStateAction<any>>
+}
+
+export function Input(props: CustomProps) {
   const { onChange, isNumber, groupSymbolLeft, groupSymbolRight, isPercent, ...otherProps } = props;
 
   function onChangeInput(event: any) {
@@ -9,7 +17,7 @@ export function Input(props: any) {
 
     if (isPercent)
       onChange(BigNumber(value).div(100));
-    else if (props.type === 'number')
+    else if (props.type === 'number' || isNumber)
       onChange(BigNumber(value));
 
     else
