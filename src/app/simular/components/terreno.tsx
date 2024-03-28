@@ -51,15 +51,15 @@ export function Terreno({ mesesAteVender, onValorTotalTerrenoChange }: CustomPro
       <div className="row">
         <div className="mb-3 col-md">
           <label className="form-label">Itbi</label>
-          <Input onChange={setItbi} type="number" min="1" step="any" groupSymbolRight="%" isPercent />
+          <Input onChange={setItbi} type="number" min="1" step="any" groupSymbolRight="%" isPercent value={itbi} />
         </div>
         <div className="mb-3 col-md">
           <label className="form-label">Escritura E Registro</label>
-          <Input onChange={setEscrituraERegistro} type="number" min="1" step="any" groupSymbolRight="%" isPercent />
+          <Input onChange={setEscrituraERegistro} type="number" min="1" step="any" groupSymbolRight="%" isPercent value={escrituraERegistro} />
         </div>
         <div className="mb-3 col-md">
           <label className="form-label">Iptu</label>
-          <Input onChange={setIptu} type="number" min="1" step="any" groupSymbolLeft="R$" groupSymbolRight="ano" />
+          <Input onChange={setIptu} type="number" min="1" step="any" groupSymbolLeft="R$" groupSymbolRight="ano" value={iptu} />
         </div>
       </div>
       <div className="row mb-3">

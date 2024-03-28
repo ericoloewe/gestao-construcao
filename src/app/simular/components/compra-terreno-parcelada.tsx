@@ -27,7 +27,7 @@ export function CompraTerrenoParcelada({ valorTotalTerreno }: CustomProps) {
         <div className="row mb-3">
           <div className="col-md">
             <label className="form-label">Valor Da Entrada Sinal</label>
-            <Input onChange={setValorEntrada} type="number" groupSymbolLeft="R$" />
+            <Input onChange={setValorEntrada} type="number" groupSymbolLeft="R$" value={valorEntrada} />
             <div className="form-text">{!!valorEntrada && extenso(valorEntrada.integerValue().toNumber(), { mode: 'currency' })}</div>
           </div>
           <div className="col-md">
@@ -38,15 +38,15 @@ export function CompraTerrenoParcelada({ valorTotalTerreno }: CustomProps) {
         <div className="row mb-3">
           <div className="col-md">
             <label className="form-label">Taxa De Juros</label>
-            <Input onChange={setTaxaDeJuros} type="number" groupSymbolRight="A.M." isPercent />
+            <Input onChange={setTaxaDeJuros} type="number" groupSymbolRight="A.M." isPercent value={taxaDeJuros} />
           </div>
           <div className="col-md">
             <label className="form-label">Mês De Início</label>
-            <Input onChange={setMesDeInicio} type="number" />
+            <Input onChange={setMesDeInicio} type="number" value={mesDeInicio} />
           </div>
           <div className="col-md">
             <label className="form-label">Prazo em meses</label>
-            <Input onChange={setPrazo} type="number" />
+            <Input onChange={setPrazo} type="number" value={prazo} />
           </div>
         </div>
         <div className="row mb-3">
