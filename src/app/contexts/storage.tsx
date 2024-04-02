@@ -1,5 +1,7 @@
 "use client";
 
+
+import path from "path"
 import React, { createContext, useState, useEffect } from "react"
 
 interface StorageProviderContext {
@@ -22,6 +24,7 @@ export enum AvailableCollections {
 }
 
 const collections = {} as { [key: string]: PouchDB.Database };
+
 
 export function StorageProvider(props: any) {
   const [isDbOk, setIsDbOk] = useState<boolean>();

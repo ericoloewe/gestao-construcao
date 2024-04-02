@@ -4,6 +4,7 @@ import Logo from "./logo.svg";
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { useAuth } from "../contexts/auth";
 
 const pages = [
   {
@@ -42,7 +43,17 @@ export function Header() {
           ))}
         </ul>
       </div>
+      <AuthButton />
     </div>
   </header>;
 
+}
+
+function AuthButton() {
+  const { doAuth, doLogout, isLoadingAuth, isAuthOk } = useAuth();
+
+  if (isAuthOk)
+    return <button className="btn btn-outline-success" type="button" onClick={doLogout}>Sair</button>
+  else
+    return isLoadingAuth ? <div>Loading...</div> : <button className="btn btn-outline-success" type="button" onClick={doAuth}>Entrar</button>;
 }

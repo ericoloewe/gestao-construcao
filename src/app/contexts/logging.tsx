@@ -40,7 +40,7 @@ export function LoggingProvider(props: any) {
 
   async function startLogging() {
     const PouchDB = (await import('pouchdb-browser')).default as any;
-    
+
     db = new PouchDB('logging');
 
     const newLogger = { ...consoleBkp };
@@ -72,7 +72,11 @@ export function LoggingProvider(props: any) {
   }
 
   function saveLogInDb(type: LoggingType, args: any[]) {
-    db.post({ type, args });
+    try {
+      db.post({ type, args });
+    } catch (error) {
+      consoleBkp.error('saveLogInDb', error);
+    }
   }
 
   return (

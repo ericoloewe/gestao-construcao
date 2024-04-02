@@ -10,14 +10,21 @@ const nextConfig = {
     BASE_PATH: basePath
   },
   images: { unoptimized: true },
-  webpack(config) {
+  webpack: (config, { isServer }) => {
     config.module.rules.push({
       test: /\.svg$/,
       use: ["@svgr/webpack"]
     });
 
+    config.resolve.fallback = {
+      net: false,
+      tls: false,
+      fs: false,
+      child_process: false,
+    }
+
     return config;
   }
 }
 
-export default nextConfig;
+module.exports = nextConfig;
