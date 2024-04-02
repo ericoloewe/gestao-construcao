@@ -31,6 +31,7 @@
     "@testing-library/react": "14.2.2",
     "@types/extenso": "2.0.4",
     "@types/gapi": "0.0.47",
+    "@types/gapi.drive": "0.0.9",
     "@types/google.accounts": "0.0.14",
     "@types/jest": "29.5.12",
     "@types/js-cookie": "3.0.6",

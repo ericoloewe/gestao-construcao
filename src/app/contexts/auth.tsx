@@ -24,6 +24,7 @@ const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/res
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
 const SCOPES = 'https://www.googleapis.com/auth/drive';
+const COOKIE_NAME = 'gdriveauth';
 
 let tokenClient: any;
 
@@ -45,7 +46,7 @@ export function AuthProvider(props: any) {
   }, [isLoadingGapi, isLoadingGis]);
 
   function loadTokenIfExists() {
-    const token = Cookies.get('gdriveauth');
+    const token = Cookies.get(COOKIE_NAME);
 
     if (token) {
       gapi.client.setToken({ access_token: token });
@@ -104,7 +105,7 @@ export function AuthProvider(props: any) {
 
       const token = gapi.client.getToken();
 
-      Cookies.set('gdriveauth', token.access_token, { expires: moment().add(token.expires_in, 'm').toDate() });
+      Cookies.set(COOKIE_NAME, token.access_token, { expires: moment().add(token.expires_in, 's').toDate() });
     };
 
     if (gapi.client.getToken() === null) {
@@ -125,9 +126,12 @@ export function AuthProvider(props: any) {
 
     const token = gapi.client.getToken();
 
+    setIsAuthOk(false);
+
     if (token !== null) {
       google.accounts.oauth2.revoke(token.access_token, () => console.info('end logout'));
       gapi.client.setToken(null);
+      Cookies.remove(COOKIE_NAME);
     }
   }
 
