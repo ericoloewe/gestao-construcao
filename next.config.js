@@ -17,10 +17,16 @@ const nextConfig = {
     });
 
     config.resolve.fallback = {
+      ...config.resolve.fallback,
       net: false,
       tls: false,
       fs: false,
       child_process: false,
+    }
+
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      'pouchdb-promise$': "pouchdb-promise/lib/index.js",
     }
 
     return config;

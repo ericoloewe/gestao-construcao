@@ -55,7 +55,7 @@ export function LoggingProvider(props: any) {
 
         consoleBkp[type](...args);
 
-        saveLogInDb(type, args);
+        saveLogInDb(type, JSON.stringify(args));
       }
     };
 
@@ -71,7 +71,7 @@ export function LoggingProvider(props: any) {
     }
   }
 
-  function saveLogInDb(type: LoggingType, args: any[]) {
+  function saveLogInDb(type: LoggingType, args: any) {
     try {
       db.post({ type, args });
     } catch (error) {
