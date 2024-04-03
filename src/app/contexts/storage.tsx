@@ -5,8 +5,9 @@ import path from "path"
 import React, { createContext, useState, useEffect } from "react"
 import { useAuth } from "./auth";
 import { GDriveUtil } from "../utils/gdrive";
-//@ts-ignore
+// @ts-ignore
 import replicationStream from 'pouchdb-replication-stream';
+import MemoryStream from 'memorystream';
 
 interface StorageProviderContext {
   add: (collectionName: AvailableCollections, doc: any) => Promise<Promise<PouchDB.Core.Response>>
@@ -28,7 +29,7 @@ export enum AvailableCollections {
 }
 
 const collections = {} as { [key: string]: PouchDB.Database };
-const DB_FILE_NAME = 'gestao-construcao.settings.json';
+const DB_FILE_NAME = 'gestao-construcao.settings.config';
 
 export function StorageProvider(props: any) {
   const [isDbOk, setIsDbOk] = useState<boolean>();
@@ -51,16 +52,16 @@ export function StorageProvider(props: any) {
     console.log('loadGDrive');
 
     const file = await GDriveUtil.getFirstFileByName(DB_FILE_NAME);
-
-    newFunction();
+    const dump = await loadAllDocsDb(AvailableCollections.simulador);
 
     if (file) {
       // console.log(dbMethod.PouchDB);
 
       // TODO:
+      await GDriveUtil.updateFile(file.id, dump);
     } else {
       // console.log(PouchDB);
-      await GDriveUtil.createFile(DB_FILE_NAME, '{}');
+      await GDriveUtil.createFile(DB_FILE_NAME, dump);
     }
   }
 
@@ -80,25 +81,27 @@ export function StorageProvider(props: any) {
     setIsDbOk(true);
   }
 
-  function newFunction() {
-    var dumpedString = '';
-    var MemoryStream = require('memorystream');
-    var stream = new MemoryStream();
+  function loadAllDocsDb(collection: AvailableCollections) {
+    return new Promise((resolve, reject) => {
 
-    stream.on('data', function (chunk: any) {
-      dumpedString += chunk.toString();
-    });
+      var dumpedString = '';
+      var stream = new MemoryStream();
 
-    var db = getCollection(AvailableCollections.simulador);
+      stream.on('data', function (chunk: any) {
+        dumpedString += chunk.toString();
+      });
 
-    window.Promise = Promise;
+      var db = getCollection(collection);
 
-    // @ts-ignore
-    db.dump(stream).then(function () {
-      console.log('Yay, I have a dumpedString: ' + dumpedString);
-    }).catch(function (err: any) {
-      console.log('oh no an error', err);
-    });
+      // @ts-ignore
+      db.dump(stream).then(function () {
+        console.info('Yay, I have a dumpedString: ' + dumpedString);
+        resolve(dumpedString);
+      }).catch(function (err: any) {
+        console.error('oh no an error', err);
+        reject(err);
+      });
+    })
   }
 
   async function add(collectionName: AvailableCollections, doc: any) {

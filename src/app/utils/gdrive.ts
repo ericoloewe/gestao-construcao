@@ -55,6 +55,39 @@ export class GDriveUtil {
     });
   }
 
+  public static updateFile(fileId: string, fileData: any) {
+    // const url = 'https://www.googleapis.com/upload/drive/v3/files/' + fileId + '?uploadType=media';
+    const boundary = '-------314159265358979323846';
+
+    return new Promise((resolve, reject) => {
+      const request = gapi.client.request({
+        'path': '/upload/drive/v3/files/' + fileId + '?uploadType=media',
+        'method': 'PATCH',
+        'params': { 'uploadType': 'multipart', 'alt': 'json' },
+        'headers': {
+          'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
+        },
+        'body': fileData
+      });
+
+      request.then(resolve, reject)
+      request.execute(resolve);
+    });
+    // fetch(url, {
+    //   method: 'PATCH',
+    //   headers: new Headers({
+    //     Authorization: 'Bearer ' + oauthToken,
+    //     'Content-type': 'application/my.app'
+    //   }),
+    //   body: fileData
+    // })
+    //   .then(result => result.json())
+    //   .then(value => {
+    //     console.log('Updated. Result:\n' + JSON.stringify(value, null, 2));
+    //   })
+    //   .catch(err => console.error(err))
+  }
+
   /**
    * Update an existing file's metadata and content.
   *
@@ -63,7 +96,7 @@ export class GDriveUtil {
   * @param {File} fileData File object to read data from.
   * @param {Function} callback Callback function to call when the request is complete.
   */
-  public static updateFile(fileId: string, fileMetadata: any, fileData: any): Promise<any> {
+  public static updateFile_OLD(fileId: string, fileMetadata: any, fileData: Blob): Promise<any> {
     const boundary = '-------314159265358979323846';
     const delimiter = "\r\n--" + boundary + "\r\n";
     const close_delim = "\r\n--" + boundary + "--";
