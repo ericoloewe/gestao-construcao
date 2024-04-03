@@ -21,7 +21,7 @@ export function Header() {
   const [show, setShow] = useState(false);
   const pathname = usePathname();
 
-  return <header className="navbar navbar-expand-sm bg-body-tertiary">
+  return <header className="navbar navbar-expand-md bg-body-tertiary">
     <div className="container-fluid">
       <Link
         href="/"
@@ -34,7 +34,7 @@ export function Header() {
       <button className="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" onClick={e => setShow(!show)}>
         <span className="navbar-toggler-icon"></span>
       </button>
-      <div className={`collapse navbar-collapse ${show && 'show'}`} id="navbarSupportedContent">
+      <div className={`collapse navbar-collapse justify-content-between ${show && 'show'}`} id="navbarSupportedContent">
         <ul className="navbar-nav">
           {pages.map(x => (
             <li key={x.path} className="nav-item">
@@ -42,8 +42,8 @@ export function Header() {
             </li>
           ))}
         </ul>
+        <AuthButton />
       </div>
-      <AuthButton />
     </div>
   </header>;
 

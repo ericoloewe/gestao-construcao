@@ -5,6 +5,27 @@ export interface GDriveFile {
   name: string;
 }
 
+export interface GDriveFileGet {
+  result: boolean;
+  body: string;
+  headers: Headers;
+  status: number;
+  statusText: null;
+}
+
+export interface Headers {
+  "cache-control": string;
+  "content-encoding": string;
+  "content-type": string;
+  date: string;
+  expires: string;
+  server: string;
+  vary: string;
+  "x-guploader-uploadid": string;
+  "Content-Type": string;
+}
+
+
 export class GDriveUtil {
   public static async getFirstFileByName(fileName: string): Promise<GDriveFile | undefined> {
     const { result } = await gapi.client.drive.files.list({ q: `fullText contains '"${fileName}"'`, });
@@ -13,6 +34,10 @@ export class GDriveUtil {
     const files = result?.files;
 
     return files && files[0];
+  }
+
+  public static async getFileById(fileId: string): Promise<GDriveFileGet | undefined> {
+    return gapi.client.drive.files.get({ fileId: fileId, alt: 'media' } as any) as any;
   }
 
   public static createFile(name: string, data: any) {
