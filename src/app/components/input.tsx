@@ -25,7 +25,7 @@ export function Input(props: CustomProps) {
       onChange(value);
   }
 
-  const inputValue = isInputNumber && value ? value.toNumber() : value;
+  const inputValue = isInputNumber && value ? parseNumber(value, { isPercent }) : value;
 
   const input = <input className="form-control" onChange={onChangeInput} value={inputValue} {...otherProps} />;
 
@@ -37,3 +37,8 @@ export function Input(props: CustomProps) {
     </div>
   ) : input;
 }
+
+function parseNumber(value: BigNumber, { isPercent }: any) {
+  return isPercent ? value.times(100).toNumber() : value.toNumber();
+}
+
