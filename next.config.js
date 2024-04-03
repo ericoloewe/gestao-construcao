@@ -1,5 +1,7 @@
 const isDev = process.env.NODE_ENV === 'development';
 const basePath = isDev ? '' : '/labirinto-robo-html';
+const path = require('path')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -26,8 +28,13 @@ const nextConfig = {
 
     config.resolve.alias = {
       ...config.resolve.alias,
-      'pouchdb-promise$': "pouchdb-promise/lib/index.js",
     }
+
+    config.plugins.push(new CopyWebpackPlugin({
+      patterns: [
+        { from: path.join(__dirname, './node_modules/sql.js/dist/sql-wasm.wasm'), to: path.join(__dirname, './public/sql-wasm.wasm') }
+      ]
+    }))
 
     return config;
   }

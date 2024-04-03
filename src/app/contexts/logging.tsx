@@ -2,8 +2,6 @@
 
 import React, { createContext, useState, useEffect } from "react"
 import { useEnv } from "./env";
-// import PouchDb from "pouchdb-browser";
-
 
 const LoggingContext = createContext({
   logger: {}
@@ -22,7 +20,6 @@ enum LoggingType {
 export function LoggingProvider(props: any) {
   const { logLevel } = useEnv()
   const [logger, setLogger] = useState<any>();
-  let db: PouchDB.Database = {} as any;
 
   useEffect(() => {
     startLogging();
@@ -39,10 +36,6 @@ export function LoggingProvider(props: any) {
   }, [logger]);
 
   async function startLogging() {
-    const PouchDB = (await import('pouchdb-browser')).default as any;
-
-    db = new PouchDB('logging');
-
     const newLogger = { ...consoleBkp };
 
     newLogger.log = createLogging(LoggingType.log);
@@ -73,7 +66,7 @@ export function LoggingProvider(props: any) {
 
   function saveLogInDb(type: LoggingType, args: any) {
     try {
-      db.post({ type, args });
+      // db.post({ type, args });
     } catch (error) {
       consoleBkp.error('saveLogInDb', error);
     }

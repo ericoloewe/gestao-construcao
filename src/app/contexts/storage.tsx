@@ -1,18 +1,15 @@
 "use client";
 
 
-import path from "path"
 import React, { createContext, useState, useEffect } from "react"
 import { useAuth } from "./auth";
 import { GDriveUtil } from "../utils/gdrive";
-// @ts-ignore
-import replicationStream from 'pouchdb-replication-stream';
-import MemoryStream from 'memorystream';
+import initSqlJs from "sql.js";
 
 interface StorageProviderContext {
-  add: (collectionName: AvailableCollections, doc: any) => Promise<Promise<PouchDB.Core.Response>>
+  add: (collectionName: AvailableCollections, doc: any) => Promise<any>
   update: (collectionName: AvailableCollections, id: string, doc: any) => Promise<void>
-  get: (collectionName: AvailableCollections, id: string) => Promise<PouchDB.Core.Document<any> & PouchDB.Core.GetMeta>
+  get: (collectionName: AvailableCollections, id: string) => Promise<any>
   isDbOk: boolean
 }
 
@@ -28,14 +25,11 @@ export enum AvailableCollections {
   simulador = "simulador",
 }
 
-const collections = {} as { [key: string]: PouchDB.Database };
 const DB_FILE_NAME = 'gestao-construcao.settings.config';
 
 export function StorageProvider(props: any) {
+  const [db, setDb] = useState<import('sql.js').Database>();
   const [isDbOk, setIsDbOk] = useState<boolean>();
-  const [dbMethod, setPouchDB] = useState<{ PouchDB: PouchDB.Static }>({ dbMethod: {} } as any);
-  // let PouchDB: PouchDB.Static = {} as any;
-
   const { isAuthOk } = useAuth();
 
   useEffect(() => {
@@ -52,7 +46,7 @@ export function StorageProvider(props: any) {
     console.log('loadGDrive');
 
     const file = await GDriveUtil.getFirstFileByName(DB_FILE_NAME);
-    const dump = await loadAllDocsDb(AvailableCollections.simulador);
+    const dump = db?.export();
 
     if (file) {
       // console.log(dbMethod.PouchDB);
@@ -66,42 +60,15 @@ export function StorageProvider(props: any) {
   }
 
   async function startStorage() {
-    const PouchDB = (await import('pouchdb-browser')).default as any;
-
-    // @ts-ignore
-    // var replicationStream = (await import('pouchdb-replication-stream')).default as any;
-
-    // console.log(replicationStream);
-
-    PouchDB.plugin(replicationStream.plugin);
-    PouchDB.adapter('writableStream', replicationStream.adapters.writableStream);
-
-
-    setPouchDB({ PouchDB });
-    setIsDbOk(true);
-  }
-
-  function loadAllDocsDb(collection: AvailableCollections) {
-    return new Promise((resolve, reject) => {
-
-      var dumpedString = '';
-      var stream = new MemoryStream();
-
-      stream.on('data', function (chunk: any) {
-        dumpedString += chunk.toString();
-      });
-
-      var db = getCollection(collection);
-
-      // @ts-ignore
-      db.dump(stream).then(function () {
-        console.info('Yay, I have a dumpedString: ' + dumpedString);
-        resolve(dumpedString);
-      }).catch(function (err: any) {
-        console.error('oh no an error', err);
-        reject(err);
-      });
+    const SQL = await initSqlJs({
+      // Fetch sql.js wasm file from CDN
+      // This way, we don't need to deal with webpack
+      locateFile: (file) => `/${file}`,
     })
+
+    const db = new SQL.Database();
+
+    setDb(db);
   }
 
   async function add(collectionName: AvailableCollections, doc: any) {
@@ -123,14 +90,6 @@ export function StorageProvider(props: any) {
 
   async function get(collectionName: AvailableCollections, id: string) {
     return await getCollection(collectionName).get(id);
-  }
-
-  function getCollection(collectionName: AvailableCollections) {
-    if (collections[collectionName] == null) {
-      collections[collectionName] = new dbMethod.PouchDB(collectionName);
-    }
-
-    return collections[collectionName];
   }
 
   return (
