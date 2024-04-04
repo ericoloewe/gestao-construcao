@@ -4,26 +4,22 @@ import BigNumber from 'bignumber.js';
 import extenso from "extenso";
 import { Input } from "../../components/input";
 import { useSimulador } from "../context";
+import { SimuladorUtil } from "@/app/utils/simulador";
 
 interface CustomProps {
-  mesesAteVender: number
   onValorTotalTerrenoChange: Dispatch<SetStateAction<BigNumber | undefined>>
 }
 
-export function Terreno({ mesesAteVender, onValorTotalTerrenoChange }: CustomProps) {
+export function Terreno({ onValorTotalTerrenoChange }: CustomProps) {
   const [valorTotal, setValorTotal] = useState<BigNumber>();
   const { area, setArea, valor, setValor, itbi, setItbi, escrituraERegistro, setEscrituraERegistro, iptu, setIptu, } = useSimulador();
 
   useEffect(() => {
-    if (valor && itbi && escrituraERegistro && iptu && mesesAteVender) {
-      const mesesAteVenderBig = BigNumber(mesesAteVender);
-      const mesesDoAno = BigNumber(12);
-
-      /* <h6>R$ {(valor + (valor * (itbi + escrituraERegistro)) + (iptu * (mesesAteVender / 12))) || '105.600,00'}</h6> */
-      setValorTotal(valor.plus(valor.times(itbi.plus(escrituraERegistro))).plus(iptu.times(mesesAteVenderBig.div(mesesDoAno))));
+    if (valor && itbi && escrituraERegistro && iptu) {
+      setValorTotal(SimuladorUtil.valorTotal(valor, itbi, escrituraERegistro, iptu, SimuladorUtil.MESES_ATE_VENDER));
     }
 
-  }, [valor, itbi, escrituraERegistro, iptu, mesesAteVender]);
+  }, [valor, itbi, escrituraERegistro, iptu]);
 
   useEffect(() => {
     onValorTotalTerrenoChange(valorTotal);

@@ -9,6 +9,7 @@ import { Layout } from "./shared/layout";
 import { useStorage } from "./contexts/storage";
 import { Simulacao } from "./utils/db-repository";
 import Link from "next/link";
+import { SimuladorUtil } from "./utils/simulador";
 
 function Home() {
   const { isDbOk, repository } = useStorage();
@@ -22,6 +23,10 @@ function Home() {
   async function load() {
     const result = await repository.list();
 
+    result.forEach(x => {
+      x.valorTotal = SimuladorUtil.valorTotal(x.valor, x.itbi, x.escrituraERegistro, x.iptu, SimuladorUtil.MESES_ATE_VENDER)
+    })
+
     console.log(result);
 
     setSimulacoes(result);
@@ -33,8 +38,8 @@ function Home() {
         <div key={x.id.toNumber()} className="card">
           <div className="card-body">
             <h5 className="card-title">{x.titulo}</h5>
-            <h6 className="card-subtitle mb-2 text-body-secondary">Card subtitle</h6>
-            <p className="card-text">Area terreno: {x.area?.toNumber()}</p>
+            <h6 className="card-subtitle mb-2 text-body-secondary">Custo Total Terreno: R$ {x.valorTotal?.toFormat(2)}</h6>
+            <p className="card-text">Area terreno: {x.area?.toNumber()} m²</p>
             <Link href={`/simular?sim=${x.id}`} className="btn btn-secondary">Ver simulação</Link>
           </div>
         </div>

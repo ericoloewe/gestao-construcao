@@ -31,7 +31,7 @@ function Simulador() {
             </div>
           </div>
         </section>
-        <Terreno mesesAteVender={26} onValorTotalTerrenoChange={setValorTotalTerreno} />
+        <Terreno onValorTotalTerrenoChange={setValorTotalTerreno} />
         <CompraTerrenoParcelada valorTotalTerreno={valorTotalTerreno} />
         <button type="button" className="btn btn-primary" onClick={saveAll}>Salvar simulação</button>
       </article>
