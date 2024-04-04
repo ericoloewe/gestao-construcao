@@ -1,10 +1,26 @@
 import moment from 'moment';
 import initSqlJs from 'sql.js';
 import { GDriveUtil } from './gdrive';
+import BigNumber from 'bignumber.js';
 
 let SQL: import('sql.js').SqlJsStatic
 
 const DB_NAME = 'gestao-construcao.settings.db';
+
+export interface Simulacao {
+  id: BigNumber
+  titulo?: string
+  area?: BigNumber
+  valor?: BigNumber
+  itbi?: BigNumber
+  escrituraERegistro?: BigNumber
+  iptu?: BigNumber
+  valorTotal?: BigNumber
+  valorEntrada?: BigNumber
+  taxaDeJuros?: BigNumber
+  mesDeInicio?: BigNumber
+  prazo?: BigNumber
+}
 
 export class DbRepository {
   private constructor(private db: import('sql.js').Database) { }
@@ -126,6 +142,17 @@ export class DbRepository {
     return result;
   }
 
+  public async list(): Promise<Simulacao[]> {
+    await Promise.resolve();
+
+    const result = this.db.exec('select * from simulacao');
+
+    if (result.length === 0)
+      throw new Error('simulacao não encontrada');
+
+    return this.parseSqlResultToObj(result)[0];
+  }
+
   public async getSimulacao(id: string) {
     await Promise.resolve();
 
@@ -139,7 +166,9 @@ export class DbRepository {
 
   private parseSqlResultToObj(result: initSqlJs.QueryExecResult[]) {
     return result.map(res => res.values.map(values => res.columns.reduce((p, n, i) => {
-      p[n] = values[i];
+      const value = values[i];
+
+      p[n] = typeof (value) === 'number' ? BigNumber(value) : value;
 
       return p;
     }, {} as any)));

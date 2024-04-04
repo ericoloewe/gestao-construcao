@@ -8,15 +8,29 @@ import { useState } from "react";
 import BigNumber from "bignumber.js";
 import { Layout } from "../shared/layout";
 import { SimuladorProvider, useSimulador } from "./context";
+import { Input } from "../components/input";
 
 function Simulador() {
   const [valorTotalTerreno, setValorTotalTerreno] = useState<BigNumber>();
-  const { saveAll } = useSimulador();
+  const { saveAll, titulo, setTitulo } = useSimulador();
 
   return (
     <main className="main container mt-3">
       <h1>Simular nova construção</h1>
       <article>
+        <section className="card valor-terreno mb-3">
+          <div className="card-header">
+            Terreno
+          </div>
+          <div className="mark-section">
+            <div className="row">
+              <div className="mb-3 col-md">
+                <label className="form-label">Como deseja chamar sua simulação?</label>
+                <Input onChange={setTitulo} type="text" value={titulo} placeholder="Casa popular 50m²" />
+              </div>
+            </div>
+          </div>
+        </section>
         <Terreno mesesAteVender={26} onValorTotalTerrenoChange={setValorTotalTerreno} />
         <CompraTerrenoParcelada valorTotalTerreno={valorTotalTerreno} />
         <button type="button" className="btn btn-primary" onClick={saveAll}>Salvar simulação</button>
@@ -26,7 +40,6 @@ function Simulador() {
 }
 
 export default function Page() {
-
   return (
     <Layout>
       <SimuladorProvider>
