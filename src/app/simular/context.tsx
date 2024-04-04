@@ -41,7 +41,6 @@ export function SimuladorProvider(props: any) {
   const [itbi, setItbi] = useState<BigNumber>();
   const [escrituraERegistro, setEscrituraERegistro] = useState<BigNumber>();
   const [iptu, setIptu] = useState<BigNumber>();
-  const [valorTotal, setValorTotal] = useState<BigNumber>();
   const [valorEntrada, setValorEntrada] = useState<BigNumber>();
   const [taxaDeJuros, setTaxaDeJuros] = useState<BigNumber>();
   const [mesDeInicio, setMesDeInicio] = useState<BigNumber>();
@@ -66,7 +65,6 @@ export function SimuladorProvider(props: any) {
       setItbi(simulacao.itbi && BigNumber(simulacao.itbi));
       setEscrituraERegistro(simulacao.escrituraERegistro && BigNumber(simulacao.escrituraERegistro));
       setIptu(simulacao.iptu && BigNumber(simulacao.iptu));
-      setValorTotal(simulacao.valorTotal && BigNumber(simulacao.valorTotal));
       setValorEntrada(simulacao.valorEntrada && BigNumber(simulacao.valorEntrada));
       setTaxaDeJuros(simulacao.taxaDeJuros && BigNumber(simulacao.taxaDeJuros));
       setMesDeInicio(simulacao.mesDeInicio && BigNumber(simulacao.mesDeInicio));
@@ -77,7 +75,7 @@ export function SimuladorProvider(props: any) {
   async function saveAll() {
     console.log('start save all');
     const sim = searchParams.get('sim');
-    const simulacao = { area, valor, itbi, escrituraERegistro, iptu, valorTotal, valorEntrada, taxaDeJuros, mesDeInicio, prazo } as any;
+    const simulacao = { area, valor, itbi, escrituraERegistro, iptu, valorEntrada, taxaDeJuros, mesDeInicio, prazo } as any;
 
     Object.keys(simulacao).forEach(key => {
       // @ts-ignore
@@ -107,7 +105,6 @@ export function SimuladorProvider(props: any) {
         itbi, setItbi,
         escrituraERegistro, setEscrituraERegistro,
         iptu, setIptu,
-        valorTotal, setValorTotal,
         valorEntrada, setValorEntrada,
         taxaDeJuros, setTaxaDeJuros,
         mesDeInicio, setMesDeInicio,

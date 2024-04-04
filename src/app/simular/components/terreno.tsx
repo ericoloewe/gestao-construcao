@@ -11,7 +11,8 @@ interface CustomProps {
 }
 
 export function Terreno({ mesesAteVender, onValorTotalTerrenoChange }: CustomProps) {
-  const { area, setArea, valor, setValor, itbi, setItbi, escrituraERegistro, setEscrituraERegistro, iptu, setIptu, valorTotal, setValorTotal, } = useSimulador();
+  const [valorTotal, setValorTotal] = useState<BigNumber>();
+  const { area, setArea, valor, setValor, itbi, setItbi, escrituraERegistro, setEscrituraERegistro, iptu, setIptu, } = useSimulador();
 
   useEffect(() => {
     if (valor && itbi && escrituraERegistro && iptu && mesesAteVender) {

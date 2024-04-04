@@ -17,12 +17,11 @@ export class DbRepository {
       })
     }
 
-    debugger
 
     const localDb = localStorage.getItem(DB_NAME);
 
     if (data == null && localDb != null) {
-      data = Buffer.from(localDb, 'utf8');
+      data = Buffer.from(localDb, 'utf16le');
     }
 
     const db = new SQL.Database(data);
@@ -31,7 +30,33 @@ export class DbRepository {
 
     await repo.runMigrations();
 
-    // console.log(new SQL.Database(Buffer.from(db.export())))
+
+    //test
+    // const exp = db.export();
+    // const newLocal = Buffer.from(db.export()).toString('utf8');
+
+    // localStorage.setItem('teste', newLocal)
+
+    // const dbt = Buffer.from(localStorage.getItem('teste') || '', 'utf8')
+
+    // const dbt1 = Buffer.from(exp).toString('utf8')
+    // const dbt = Buffer.from(dbt1, 'utf8')
+
+    // const str = exp.toString();
+    // const dbt = Uint8Array.from(str.split(',').map(x => parseInt(x, 10)));
+
+    // const dbt1 = Buffer.from(exp).toString('utf16le')
+    // const dbt = Buffer.from(dbt1, 'utf16le')
+
+    // const newLocal1 = new SQL.Database(dbt);
+    // console.log(SQL);
+    // console.log(exp);
+
+    // console.log(newLocal1)
+
+    // console.log(newLocal1.exec('select * from simulacao'));
+
+    //test
 
     return repo;
   }
@@ -45,10 +70,9 @@ export class DbRepository {
     await Promise.resolve();
 
     const exp = this.export();
-    const db = Buffer.from(exp).toString('utf8');
+    const db = Buffer.from(exp).toString('utf16le');
 
     console.log(db.length);
-
 
     localStorage.setItem(DB_NAME, db);
   }
@@ -134,6 +158,6 @@ export class DbRepository {
   private async runMigrations() {
     await Promise.resolve();
 
-    this.db.exec(`CREATE TABLE IF NOT EXISTS "simulacao" ( "id" INTEGER NOT NULL, "titulo" TEXT NULL DEFAULT NULL, "area" REAL NULL DEFAULT 0, "valor" REAL NULL DEFAULT 0, "itbi" REAL NULL DEFAULT 0, "escrituraERegistro" REAL NULL DEFAULT 0, "iptu" REAL NULL DEFAULT 0, "valorTotal" REAL NULL DEFAULT 0, "valorEntrada" REAL NULL DEFAULT 0, "taxaDeJuros" REAL NULL DEFAULT 0, "mesDeInicio" REAL NULL DEFAULT 0, "prazo" REAL NULL DEFAULT 0, "createdDate" DATETIME NOT NULL, "updatedDate" DATETIME NULL,PRIMARY KEY ("id"));`);
+    this.db.exec(`CREATE TABLE IF NOT EXISTS "simulacao" ( "id" INTEGER NOT NULL, "titulo" TEXT NULL DEFAULT NULL, "area" REAL NULL DEFAULT 0, "valor" REAL NULL DEFAULT 0, "itbi" REAL NULL DEFAULT 0, "escrituraERegistro" REAL NULL DEFAULT 0, "iptu" REAL NULL DEFAULT 0, "valorEntrada" REAL NULL DEFAULT 0, "taxaDeJuros" REAL NULL DEFAULT 0, "mesDeInicio" REAL NULL DEFAULT 0, "prazo" REAL NULL DEFAULT 0, "createdDate" DATETIME NOT NULL, "updatedDate" DATETIME NULL,PRIMARY KEY ("id"));`);
   }
 }
