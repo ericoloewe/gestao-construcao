@@ -17,7 +17,6 @@ export class DbRepository {
       })
     }
 
-
     const localDb = localStorage.getItem(DB_NAME);
 
     if (data == null && localDb != null) {
@@ -58,9 +57,31 @@ export class DbRepository {
 
     //test
 
+    repo.beforeClose();
+
     return repo;
   }
 
+
+  private beforeClose() {
+    const beforeUnload = (e: any) => {
+      const message = "Ter certeza que deseja sair?";
+      const event = e || window.event;
+
+      // For IE and Firefox
+      if (event) {
+        event.returnValue = message;
+      }
+
+      this.persistDb();
+
+      // For Safari
+      return message;
+    };
+
+    window.onbeforeunload = beforeUnload;
+    window.addEventListener("beforeunload", beforeUnload);
+  }
 
   public export() {
     return this.db.export();
@@ -72,9 +93,10 @@ export class DbRepository {
     const exp = this.export();
     const db = Buffer.from(exp).toString('utf16le');
 
-    console.log(db.length);
-
     localStorage.setItem(DB_NAME, db);
+
+
+    console.log("persistDb ok");
   }
 
   public async save(data: any) {

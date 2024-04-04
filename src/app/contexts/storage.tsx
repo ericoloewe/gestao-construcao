@@ -32,7 +32,6 @@ export function StorageProvider(props: any) {
 
   useEffect(() => {
     if (!runned) {
-      handleUnloadEvent();
       startStorage();
     }
 
@@ -72,22 +71,6 @@ export function StorageProvider(props: any) {
 
       await startStorage(JSON.parse(fileData?.body || ''))
     }
-  }
-
-  function handleUnloadEvent() {
-    window.onbeforeunload = function (e) {
-      repository.persistDb();
-
-      var message = "Ter certeza que deseja sair?", e = e || window.event;
-
-      // For IE and Firefox
-      if (e) {
-        e.returnValue = message;
-      }
-
-      // For Safari
-      return message;
-    };
   }
 
   async function startStorage(data?: any) {
