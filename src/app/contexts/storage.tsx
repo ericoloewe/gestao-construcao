@@ -68,6 +68,7 @@ export function StorageProvider(props: any) {
   }
 
   async function startStorage(data?: any) {
+    console.log('startStorage');
     const repository = await DbRepository.create(data);
 
     setRepository(repository);

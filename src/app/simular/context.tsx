@@ -59,6 +59,9 @@ export function SimuladorProvider(props: any) {
     if (sim != null) {
       const simulacao = await repository.getSimulacao(sim);
 
+      console.log(simulacao);
+
+
       setArea(simulacao.area && BigNumber(simulacao.area));
       setValor(simulacao.valor && BigNumber(simulacao.valor));
       setItbi(simulacao.itbi && BigNumber(simulacao.itbi));
@@ -75,7 +78,7 @@ export function SimuladorProvider(props: any) {
   async function saveAll() {
     console.log('start save all');
     const sim = searchParams.get('sim');
-    const simulacao = { area, valor, itbi, escrituraERegistro, iptu, valorTotal, valorEntrada, taxaDeJuros, mesDeInicio, prazo };
+    const simulacao = { area, valor, itbi, escrituraERegistro, iptu, valorTotal, valorEntrada, taxaDeJuros, mesDeInicio, prazo } as any;
 
     Object.keys(simulacao).forEach(key => {
       // @ts-ignore
@@ -85,17 +88,14 @@ export function SimuladorProvider(props: any) {
       }
     })
 
-    if (sim) {
-      console.log(`start update id: ${sim}`);
+    simulacao.id = sim;
 
-      update(AvailableCollections.simulador, sim, simulacao)
-    } else {
-      console.log('start creating new');
-      const { id, ok } = await add(AvailableCollections.simulador, simulacao);
+    const result = await repository.save(simulacao)
 
-      if (ok)
-        router.push(`/simular?sim=${id}`);
-    }
+    console.log(result);
+
+    if (sim == null)
+      router.push(`/simular?sim=${result.id}`);
 
     console.log('end save all');
   }
