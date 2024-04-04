@@ -21,8 +21,6 @@ export enum AvailableCollections {
   simulador = "simulador",
 }
 
-const DB_FILE_NAME = 'gestao-construcao.settings.db';
-
 let runned = false;
 
 export function StorageProvider(props: any) {
@@ -44,27 +42,10 @@ export function StorageProvider(props: any) {
     }
   }, [isAuthOk]);
 
-  async function updateGDrive() {
-    console.log('updateGDrive');
-
-    const file = await GDriveUtil.getFirstFileByName(DB_FILE_NAME);
-    const dump = repository?.export();
-
-    if (file) {
-      // console.log(dbMethod.PouchDB);
-
-      // TODO:
-      await GDriveUtil.updateFile(file.id, dump);
-    } else {
-      // console.log(PouchDB);
-      await GDriveUtil.createFile(DB_FILE_NAME, dump);
-    }
-  }
-
   async function loadGDrive() {
     console.log('loadGDrive');
 
-    const file = await GDriveUtil.getFirstFileByName(DB_FILE_NAME);
+    const file = await GDriveUtil.getFirstFileByName(GDriveUtil.DB_FILE_NAME);
 
     if (file) {
       const fileData = await GDriveUtil.getFileById(file.id);

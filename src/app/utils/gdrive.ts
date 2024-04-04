@@ -27,6 +27,7 @@ export interface Headers {
 
 
 export class GDriveUtil {
+  public static readonly DB_FILE_NAME = 'gestao-construcao.settings.db'
   public static async getFirstFileByName(fileName: string): Promise<GDriveFile | undefined> {
     const { result } = await gapi.client.drive.files.list({ q: `fullText contains '"${fileName}"'`, });
 

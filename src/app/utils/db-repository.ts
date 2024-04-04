@@ -1,5 +1,6 @@
 import moment from 'moment';
 import initSqlJs from 'sql.js';
+import { GDriveUtil } from './gdrive';
 
 let SQL: import('sql.js').SqlJsStatic
 
@@ -79,7 +80,6 @@ export class DbRepository {
       return message;
     };
 
-    window.onbeforeunload = beforeUnload;
     window.addEventListener("beforeunload", beforeUnload);
   }
 
@@ -97,6 +97,18 @@ export class DbRepository {
 
 
     console.log("persistDb ok");
+  }
+
+  private async updateGDrive(dump: string) {
+    console.log('updateGDrive');
+
+    const file = await GDriveUtil.getFirstFileByName(GDriveUtil.DB_FILE_NAME);
+
+    if (file) {
+      await GDriveUtil.updateFile(file.id, dump);
+    } else {
+      await GDriveUtil.createFile(GDriveUtil.DB_FILE_NAME, dump);
+    }
   }
 
   public async save(data: any) {

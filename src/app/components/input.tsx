@@ -39,6 +39,9 @@ export function Input(props: CustomProps) {
 }
 
 function parseNumber(value: BigNumber, { isPercent }: any) {
+  if (isNaN(value.toNumber()))
+    return '';
+
   return isPercent ? value.times(100).toNumber() : value.toNumber();
 }
 
