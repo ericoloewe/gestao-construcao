@@ -21,19 +21,13 @@ export enum AvailableCollections {
   simulador = "simulador",
 }
 
-let runned = false;
-
 export function StorageProvider(props: any) {
   const [repository, setRepository] = useState<DbRepository>({} as any);
   const [isDbOk, setIsDbOk] = useState<boolean>(false);
   const { isAuthOk } = useAuth();
 
   useEffect(() => {
-    if (!runned) {
-      startStorage();
-    }
-
-    runned = true
+    startStorage();
   }, []);
 
   useEffect(() => {
@@ -57,7 +51,7 @@ export function StorageProvider(props: any) {
   async function startStorage(data?: any) {
     console.log('startStorage');
     const repository = await DbRepository.create(data);
-    
+
     setRepository(repository);
     setIsDbOk(true);
     console.log('startStorage isDbOk');

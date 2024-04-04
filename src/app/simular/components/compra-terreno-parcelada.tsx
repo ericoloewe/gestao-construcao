@@ -52,16 +52,16 @@ export function CompraTerrenoParcelada({ valorTotalTerreno }: CustomProps) {
         <div className="row mb-3">
           <div className="col-md">
             <label className="form-label">Mês Da Última Parcela</label>
-            <h6>{mesDeInicio && prazo && mesDeInicio.plus(prazo).minus(1).toFormat(2)}</h6>
+            <h6>{mesDeInicio && prazo && mesDeInicio.plus(prazo).minus(1).toFormat(0)}</h6>
           </div>
           <div className="col-md">
             <label className="form-label">Valor da parcela</label>
-            <h6>{valorDaParcela?.toFormat(2)}</h6>
+            <h6>R$ {valorDaParcela?.toFormat(2)}</h6>
             <div className="form-text">{!!valorDaParcela && extenso(valorDaParcela.integerValue().toNumber(), { mode: 'currency' })}</div>
           </div>
           <div className="col-md">
             <label className="form-label">Valor Total Parcelado</label>
-            <h6>{valorTotalParcelado?.toFormat(2)}</h6>
+            <h6>R$ {valorTotalParcelado?.toFormat(2)}</h6>
             <div className="form-text">{!!valorTotalParcelado && extenso(valorTotalParcelado.integerValue().toNumber(), { mode: 'currency' })}</div>
           </div>
         </div>

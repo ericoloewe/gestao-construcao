@@ -11,6 +11,7 @@ const nextConfig = {
   env: {
     BASE_PATH: basePath
   },
+  reactStrictMode: false,
   images: { unoptimized: true },
   webpack: (config, { isServer }) => {
     config.module.rules.push({

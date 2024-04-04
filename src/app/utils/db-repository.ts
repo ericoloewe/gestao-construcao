@@ -34,10 +34,10 @@ export class DbRepository {
       })
     }
 
-    const localDb = localStorage.getItem(DB_NAME);
+    const localDump = localStorage.getItem(DB_NAME);
 
-    if (data == null && localDb != null) {
-      data = Buffer.from(localDb, 'utf16le');
+    if (data == null && localDump != null) {
+      data = Buffer.from(localDump, 'utf16le');
     }
 
     const db = new SQL.Database(data);
@@ -45,34 +45,6 @@ export class DbRepository {
     const repo = new DbRepository(db);
 
     await repo.runMigrations();
-
-
-    //test
-    // const exp = db.export();
-    // const newLocal = Buffer.from(db.export()).toString('utf8');
-
-    // localStorage.setItem('teste', newLocal)
-
-    // const dbt = Buffer.from(localStorage.getItem('teste') || '', 'utf8')
-
-    // const dbt1 = Buffer.from(exp).toString('utf8')
-    // const dbt = Buffer.from(dbt1, 'utf8')
-
-    // const str = exp.toString();
-    // const dbt = Uint8Array.from(str.split(',').map(x => parseInt(x, 10)));
-
-    // const dbt1 = Buffer.from(exp).toString('utf16le')
-    // const dbt = Buffer.from(dbt1, 'utf16le')
-
-    // const newLocal1 = new SQL.Database(dbt);
-    // console.log(SQL);
-    // console.log(exp);
-
-    // console.log(newLocal1)
-
-    // console.log(newLocal1.exec('select * from simulacao'));
-
-    //test
 
     repo.beforeClose();
 
@@ -107,16 +79,15 @@ export class DbRepository {
     await Promise.resolve();
 
     const exp = this.export();
-    const db = Buffer.from(exp).toString('utf16le');
+    const dump = Buffer.from(exp).toString('utf16le');
 
-    localStorage.setItem(DB_NAME, db);
+    localStorage.setItem(DB_NAME, dump);
 
-
-    console.log("persistDb ok");
+    console.info("persistDb ok");
   }
 
   private async updateGDrive(dump: string) {
-    console.log('updateGDrive');
+    console.info('updateGDrive');
 
     const file = await GDriveUtil.getFirstFileByName(GDriveUtil.DB_FILE_NAME);
 
