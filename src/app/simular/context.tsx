@@ -46,7 +46,7 @@ export function SimuladorProvider(props: any) {
   const [taxaDeJuros, setTaxaDeJuros] = useState<BigNumber>();
   const [mesDeInicio, setMesDeInicio] = useState<BigNumber>();
   const [prazo, setPrazo] = useState<BigNumber>();
-  const { add, update, get, isDbOk } = useStorage();
+  const { repository, isDbOk } = useStorage();
 
   useEffect(() => {
     if (isDbOk)
@@ -57,7 +57,7 @@ export function SimuladorProvider(props: any) {
     const sim = searchParams.get('sim');
 
     if (sim != null) {
-      const simulacao = await get(AvailableCollections.simulador, sim);
+      const simulacao = await repository.getSimulacao(sim);
 
       setArea(simulacao.area && BigNumber(simulacao.area));
       setValor(simulacao.valor && BigNumber(simulacao.valor));

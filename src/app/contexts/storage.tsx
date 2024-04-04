@@ -4,19 +4,15 @@
 import React, { createContext, useState, useEffect } from "react"
 import { useAuth } from "./auth";
 import { GDriveUtil } from "../utils/gdrive";
-import initSqlJs from "sql.js";
+import { DbRepository } from "../utils/db-repository";
 
 interface StorageProviderContext {
-  add: (collectionName: AvailableCollections, doc: any) => Promise<any>
-  update: (collectionName: AvailableCollections, id: string, doc: any) => Promise<void>
-  get: (collectionName: AvailableCollections, id: string) => Promise<any>
+  repository: DbRepository
   isDbOk: boolean
 }
 
 const StorageContext = createContext<StorageProviderContext>({
-  add: () => Promise.resolve({} as any),
-  update: () => Promise.resolve(),
-  get: () => Promise.resolve(),
+  repository: {} as any,
   isDbOk: false,
 });
 
@@ -25,10 +21,10 @@ export enum AvailableCollections {
   simulador = "simulador",
 }
 
-const DB_FILE_NAME = 'gestao-construcao.settings.config';
+const DB_FILE_NAME = 'gestao-construcao.settings.db';
 
 export function StorageProvider(props: any) {
-  const [db, setDb] = useState<import('sql.js').Database>();
+  const [repository, setRepository] = useState<DbRepository>({} as any);
   const [isDbOk, setIsDbOk] = useState<boolean>();
   const { isAuthOk } = useAuth();
 
@@ -37,16 +33,16 @@ export function StorageProvider(props: any) {
   }, []);
 
   useEffect(() => {
-    if (isAuthOk && isDbOk) {
+    if (isAuthOk) {
       loadGDrive();
     }
-  }, [isAuthOk, isDbOk]);
+  }, [isAuthOk]);
 
-  async function loadGDrive() {
-    console.log('loadGDrive');
+  async function updateGDrive() {
+    console.log('updateGDrive');
 
     const file = await GDriveUtil.getFirstFileByName(DB_FILE_NAME);
-    const dump = db?.export();
+    const dump = repository?.export();
 
     if (file) {
       // console.log(dbMethod.PouchDB);
@@ -59,45 +55,29 @@ export function StorageProvider(props: any) {
     }
   }
 
-  async function startStorage() {
-    const SQL = await initSqlJs({
-      // Fetch sql.js wasm file from CDN
-      // This way, we don't need to deal with webpack
-      locateFile: (file) => `/${file}`,
-    })
+  async function loadGDrive() {
+    console.log('loadGDrive');
 
-    const db = new SQL.Database();
+    const file = await GDriveUtil.getFirstFileByName(DB_FILE_NAME);
 
-    setDb(db);
+    if (file) {
+      const fileData = await GDriveUtil.getFileById(file.id);
+
+      await startStorage(JSON.parse(fileData?.body || ''))
+    }
   }
 
-  async function add(collectionName: AvailableCollections, doc: any) {
-    return await getCollection(collectionName).post({
-      ...doc,
-    });
-  }
+  async function startStorage(data?: any) {
+    const repository = await DbRepository.create(data);
 
-  async function update(collectionName: AvailableCollections, id: string, doc: any) {
-    const collection = getCollection(collectionName);
-
-    const dbDoc = await collection.get(id);
-
-    collection.put({
-      ...dbDoc,
-      ...doc,
-    });
-  }
-
-  async function get(collectionName: AvailableCollections, id: string) {
-    return await getCollection(collectionName).get(id);
+    setRepository(repository);
+    setIsDbOk(true);
   }
 
   return (
     <StorageContext.Provider
       value={{
-        add,
-        update,
-        get,
+        repository,
         isDbOk,
       }}
       {...props} />
