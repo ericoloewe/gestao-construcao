@@ -23,13 +23,20 @@ export enum AvailableCollections {
 
 const DB_FILE_NAME = 'gestao-construcao.settings.db';
 
+let runned = false;
+
 export function StorageProvider(props: any) {
   const [repository, setRepository] = useState<DbRepository>({} as any);
   const [isDbOk, setIsDbOk] = useState<boolean>();
   const { isAuthOk } = useAuth();
 
   useEffect(() => {
-    startStorage();
+    if (!runned) {
+      handleUnloadEvent();
+      startStorage();
+    }
+
+    runned = true
   }, []);
 
   useEffect(() => {
@@ -65,6 +72,22 @@ export function StorageProvider(props: any) {
 
       await startStorage(JSON.parse(fileData?.body || ''))
     }
+  }
+
+  function handleUnloadEvent() {
+    window.onbeforeunload = function (e) {
+      repository.persistDb();
+
+      var message = "Ter certeza que deseja sair?", e = e || window.event;
+
+      // For IE and Firefox
+      if (e) {
+        e.returnValue = message;
+      }
+
+      // For Safari
+      return message;
+    };
   }
 
   async function startStorage(data?: any) {

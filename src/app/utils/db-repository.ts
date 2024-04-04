@@ -3,6 +3,8 @@ import initSqlJs from 'sql.js';
 
 let SQL: import('sql.js').SqlJsStatic
 
+const DB_NAME = 'gestao-construcao.settings.db';
+
 export class DbRepository {
   private constructor(private db: import('sql.js').Database) { }
 
@@ -15,11 +17,21 @@ export class DbRepository {
       })
     }
 
+    debugger
+
+    const localDb = localStorage.getItem(DB_NAME);
+
+    if (data == null && localDb != null) {
+      data = Buffer.from(localDb, 'utf8');
+    }
+
     const db = new SQL.Database(data);
 
     const repo = new DbRepository(db);
 
     await repo.runMigrations();
+
+    // console.log(new SQL.Database(Buffer.from(db.export())))
 
     return repo;
   }
@@ -27,6 +39,18 @@ export class DbRepository {
 
   public export() {
     return this.db.export();
+  }
+
+  public async persistDb() {
+    await Promise.resolve();
+
+    const exp = this.export();
+    const db = Buffer.from(exp).toString('utf8');
+
+    console.log(db.length);
+
+
+    localStorage.setItem(DB_NAME, db);
   }
 
   public async save(data: any) {
@@ -39,6 +63,8 @@ export class DbRepository {
     else
       result = this.insert(data);
 
+    this.persistDb();
+
     return result;
   }
 
@@ -46,8 +72,6 @@ export class DbRepository {
     await Promise.resolve();
 
     const result = this.db.exec('select * from simulacao where id = $id', { "$id": id });
-
-    console.log(result);
 
     if (result.length === 0)
       throw new Error('simulacao não encontrada');
@@ -102,7 +126,7 @@ export class DbRepository {
       return p
     }, {} as any);
 
-    const result = this.db.exec(command, params);
+    this.db.exec(command, params);
 
     return this.getSimulacao(data.id);
   }

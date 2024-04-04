@@ -61,7 +61,6 @@ export function SimuladorProvider(props: any) {
 
       console.log(simulacao);
 
-
       setArea(simulacao.area && BigNumber(simulacao.area));
       setValor(simulacao.valor && BigNumber(simulacao.valor));
       setItbi(simulacao.itbi && BigNumber(simulacao.itbi));
