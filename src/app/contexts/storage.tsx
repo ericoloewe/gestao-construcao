@@ -9,6 +9,8 @@ import { DbRepository } from "../utils/db-repository";
 interface StorageProviderContext {
   repository: DbRepository
   isDbOk: boolean
+  isGDriveSaveLoading: boolean
+  isGDriveLoadLoading: boolean
   doGDriveSave: () => void
   doGDriveLoad: () => void
 }
@@ -16,6 +18,8 @@ interface StorageProviderContext {
 const StorageContext = createContext<StorageProviderContext>({
   repository: {} as any,
   isDbOk: false,
+  isGDriveSaveLoading: false,
+  isGDriveLoadLoading: false,
   doGDriveSave: () => { },
   doGDriveLoad: () => { },
 });
@@ -28,6 +32,8 @@ export enum AvailableCollections {
 export function StorageProvider(props: any) {
   const [repository, setRepository] = useState<DbRepository>({} as any);
   const [isDbOk, setIsDbOk] = useState<boolean>(false);
+  const [isGDriveSaveLoading, setIsGDriveSaveLoading] = useState<boolean>(false);
+  const [isGDriveLoadLoading, setIsGDriveLoadLoading] = useState<boolean>(false);
   const { isAuthOk } = useAuth();
 
   useEffect(() => {
@@ -44,6 +50,7 @@ export function StorageProvider(props: any) {
   }
 
   async function doGDriveSave() {
+    setIsGDriveSaveLoading(true);
     console.log('doGDriveSave start');
 
     if (!isAuthOk)
@@ -54,15 +61,18 @@ export function StorageProvider(props: any) {
     updateGDrive(dump || '');
 
     console.log('doGDriveSave end');
+    setIsGDriveSaveLoading(false);
   }
 
   async function doGDriveLoad() {
+    setIsGDriveLoadLoading(true);
     console.log('doGDriveLoad start');
     if (!isAuthOk)
       throw new Error('you must login on gdrive')
 
     await loadGDrive();
     console.log('doGDriveLoad end');
+    setIsGDriveLoadLoading(false);
   }
 
   async function loadGDrive() {
@@ -95,6 +105,8 @@ export function StorageProvider(props: any) {
       value={{
         repository,
         isDbOk,
+        isGDriveSaveLoading,
+        isGDriveLoadLoading,
         doGDriveSave,
         doGDriveLoad,
       }}
