@@ -30,7 +30,7 @@ export class DbRepository {
       SQL = await initSqlJs({
         // Fetch sql.js wasm file from CDN
         // This way, we don't need to deal with webpack
-        locateFile: (file) => `/${file}`,
+        locateFile: (file) => `${process.env.BASE_PATH}/${file}`,
       })
     }
 
