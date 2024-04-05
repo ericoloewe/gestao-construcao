@@ -1,9 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import BigNumber from 'bignumber.js';
-import extenso from "extenso";
 import { Input } from "../../components/input";
 import { useSimulador } from "../context";
+import { SimuladorUtil } from "@/app/utils/simulador";
 
 interface CustomProps {
   valorTotalTerreno?: BigNumber
@@ -28,7 +28,7 @@ export function CompraTerrenoParcelada({ valorTotalTerreno }: CustomProps) {
           <div className="col-md">
             <label className="form-label">Valor Da Entrada Sinal</label>
             <Input onChange={setValorEntrada} type="number" groupSymbolLeft="R$" value={valorEntrada} />
-            <div className="form-text">{!!valorEntrada && extenso(valorEntrada.integerValue().toNumber(), { mode: 'currency' })}</div>
+            <div className="form-text">{SimuladorUtil.extenso(valorEntrada, { mode: 'currency' })}</div>
           </div>
           <div className="col-md">
             <label className="form-label">Saldo</label>
@@ -57,12 +57,12 @@ export function CompraTerrenoParcelada({ valorTotalTerreno }: CustomProps) {
           <div className="col-md">
             <label className="form-label">Valor da parcela</label>
             <h6>R$ {valorDaParcela?.toFormat(2)}</h6>
-            <div className="form-text">{!!valorDaParcela && extenso(valorDaParcela.integerValue().toNumber(), { mode: 'currency' })}</div>
+            <div className="form-text">{SimuladorUtil.extenso(valorDaParcela, { mode: 'currency' })}</div>
           </div>
           <div className="col-md">
             <label className="form-label">Valor Total Parcelado</label>
             <h6>R$ {valorTotalParcelado?.toFormat(2)}</h6>
-            <div className="form-text">{!!valorTotalParcelado && extenso(valorTotalParcelado.integerValue().toNumber(), { mode: 'currency' })}</div>
+            <div className="form-text">{SimuladorUtil.extenso(valorTotalParcelado, { mode: 'currency' })}</div>
           </div>
         </div>
       </div>

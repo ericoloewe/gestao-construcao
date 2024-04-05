@@ -38,7 +38,7 @@ export function Terreno({ onValorTotalTerrenoChange }: CustomProps) {
         <div className="mb-3 col-md">
           <label className="form-label">Valor De Aquisição</label>
           <Input onChange={setValor} type="number" min="1" groupSymbolLeft="R$" value={valor} />
-          <div className="form-text">{!!valor && extenso(valor.integerValue().toNumber(), { mode: 'currency' })}</div>
+          <div className="form-text">{SimuladorUtil.extenso(valor, { mode: 'currency' })}</div>
         </div>
         <div className="mb-3 col-md-2">
           <label className="form-label">Preço Do M²</label>
@@ -64,7 +64,7 @@ export function Terreno({ onValorTotalTerrenoChange }: CustomProps) {
         {/* <h6>R$ {format(add(add(valor, multiply(valor, add(itbi, escrituraERegistro))), multiply(iptu, divide(mesesAteVender, 12))), 2)}</h6> */}
         {/* <h6>R$ {(valor + (valor * (itbi + escrituraERegistro)) + (iptu * (mesesAteVender / 12))) || '105.600,00'}</h6> */}
         <h6>R$ {valorTotal?.toFormat(2)}</h6>
-        <div className="form-text">{!!valorTotal && extenso(valorTotal.integerValue().toNumber(), { mode: 'currency' })}</div>
+        <div className="form-text">{SimuladorUtil.extenso(valorTotal, { mode: 'currency' })}</div>
       </div>
     </section>
   );
