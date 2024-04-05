@@ -82,10 +82,7 @@ export function StorageProvider(props: any) {
 
     if (file) {
       const fileData = await GDriveUtil.getFileById(file.id);
-
-
-      const dumpUnescape = atob(fileData?.body || '');
-      const dump = decodeURIComponent(escape(dumpUnescape));
+      const dump = fileData?.body;
 
       await DbRepository.persistLocalDump(dump);
       await startStorage()
@@ -95,17 +92,14 @@ export function StorageProvider(props: any) {
   async function updateGDrive() {
     const dump = await DbRepository.exportLocalDump();
 
-    const dumpEscape = unescape(encodeURIComponent(dump || ''));
-
-    const baseDump = btoa(dumpEscape)
     console.info('updateGDrive');
 
     const file = await GDriveUtil.getFirstFileByName(GDriveUtil.DB_FILE_NAME);
 
     if (file) {
-      await GDriveUtil.updateFile(file.id, baseDump);
+      await GDriveUtil.updateFile(file.id, dump);
     } else {
-      await GDriveUtil.createFile(GDriveUtil.DB_FILE_NAME, baseDump);
+      await GDriveUtil.createFile(GDriveUtil.DB_FILE_NAME, dump);
     }
   }
 

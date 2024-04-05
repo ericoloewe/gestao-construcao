@@ -38,7 +38,7 @@ export class DbRepository {
     const localDump = await DbRepository.exportLocalDump();
 
     if (data == null && localDump != null) {
-      data = Buffer.from(localDump, 'utf16le');
+      data = Buffer.from(localDump, 'base64');
     }
 
     const db = new SQL.Database(data);
@@ -182,7 +182,8 @@ export class DbRepository {
   private async exportDump() {
     await Promise.resolve();
     const exp = this.db.export();
-    const dump = Buffer.from(exp).toString('utf16le');
+    const dump = Buffer.from(exp).toString('base64');
+
     return dump;
   }
 
