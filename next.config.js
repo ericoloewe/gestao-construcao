@@ -1,5 +1,5 @@
 const isDev = process.env.NODE_ENV === 'development';
-const basePath = isDev ? '' : '/labirinto-robo-html';
+const basePath = isDev ? '' : '/gestao-construcao';
 const path = require('path')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
@@ -13,6 +13,7 @@ const nextConfig = {
   },
   reactStrictMode: false,
   images: { unoptimized: true },
+  experimental: { missingSuspenseWithCSRBailout: false, },
   webpack: (config, { isServer }) => {
     config.module.rules.push({
       test: /\.svg$/,
@@ -36,7 +37,7 @@ const nextConfig = {
         { from: path.join(__dirname, './node_modules/sql.js/dist/sql-wasm.wasm'), to: path.join(__dirname, './public/sql-wasm.wasm') }
       ]
     }))
-    
+
     config.plugins.push(new CopyWebpackPlugin({
       patterns: [
         { from: path.join(__dirname, './node_modules/sql.js/dist/worker.sql-wasm.js'), to: path.join(__dirname, './public/worker.sql-wasm.js') }
