@@ -36,6 +36,12 @@ const nextConfig = {
         { from: path.join(__dirname, './node_modules/sql.js/dist/sql-wasm.wasm'), to: path.join(__dirname, './public/sql-wasm.wasm') }
       ]
     }))
+    
+    config.plugins.push(new CopyWebpackPlugin({
+      patterns: [
+        { from: path.join(__dirname, './node_modules/sql.js/dist/worker.sql-wasm.js'), to: path.join(__dirname, './public/worker.sql-wasm.js') }
+      ]
+    }))
 
     return config;
   }
