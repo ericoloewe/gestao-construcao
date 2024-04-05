@@ -25,6 +25,7 @@ export interface Headers {
   "Content-Type": string;
 }
 
+const mimeType = 'application/octet-stream';
 
 export class GDriveUtil {
   public static readonly DB_FILE_NAME = 'gestao-construcao.settings.db'
@@ -41,77 +42,45 @@ export class GDriveUtil {
     return gapi.client.drive.files.get({ fileId: fileId, alt: 'media' } as any) as any;
   }
 
-  public static createFile(name: string, data: any) {
-    return new Promise((resolve, reject) => {
-      try {
-        const boundary = '-------314159265358979323846';
-        const delimiter = "\r\n--" + boundary + "\r\n";
-        const close_delim = "\r\n--" + boundary + "--";
+  public static async createFile(name: string, data: any) {
 
-        const contentType = 'application/json';
+    const metadata = { name, mimeType };
+    const form = new FormData();
 
-        var metadata = {
-          'name': name,
-          'mimeType': contentType
-        };
+    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+    form.append('file', data);
 
-        var multipartRequestBody =
-          delimiter +
-          'Content-Type: application/json\r\n\r\n' +
-          JSON.stringify(metadata) +
-          delimiter +
-          'Content-Type: ' + contentType + '\r\n\r\n' +
-          data +
-          close_delim;
+    const token = gapi.auth.getToken();
 
-        var request = gapi.client.request({
-          'path': '/upload/drive/v3/files',
-          'method': 'POST',
-          'params': { 'uploadType': 'multipart' },
-          'headers': {
-            'Content-Type': 'multipart/related; boundary="' + boundary + '"'
-          },
-          'body': multipartRequestBody
-        });
+    const response = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+      method: 'POST',
+      headers: new Headers({ Authorization: 'Bearer ' + token.access_token }),
+      body: form
+    })
 
-        request.execute(resolve);
-      } catch (ex) {
-        reject(ex);
-      }
-    });
+    const json = await response.json()
+
+    console.log('Uploaded. Result:\n' + JSON.stringify(json, null, 2));
+
+    return json;
   }
 
-  public static updateFile(fileId: string, fileData: any) {
-    // const url = 'https://www.googleapis.com/upload/drive/v3/files/' + fileId + '?uploadType=media';
-    const boundary = '-------314159265358979323846';
+  public static async updateFile(fileId: string, fileData: any) {
+    const url = 'https://www.googleapis.com/upload/drive/v3/files/' + fileId + '?uploadType=media';
+    const token = gapi.auth.getToken();
 
-    return new Promise((resolve, reject) => {
-      const request = gapi.client.request({
-        'path': '/upload/drive/v3/files/' + fileId + '?uploadType=media',
-        'method': 'PATCH',
-        'params': { 'uploadType': 'multipart', 'alt': 'json' },
-        'headers': {
-          'Content-Type': 'multipart/mixed; boundary="' + boundary + '"'
-        },
-        'body': fileData
-      });
+    const response = await fetch(url, {
+      method: 'PATCH',
+      headers: new Headers({
+        Authorization: 'Bearer ' + token.access_token,
+        'Content-type': mimeType
+      }),
+      body: fileData
+    })
 
-      request.then(resolve, reject)
-      request.execute(resolve);
-    });
-    // fetch(url, {
-    //   method: 'PATCH',
-    //   headers: new Headers({
-    //     Authorization: 'Bearer ' + oauthToken,
-    //     'Content-type': 'application/my.app'
-    //   }),
-    //   body: fileData
-    // })
-    //   .then(result => result.json())
-    //   .then(value => {
-    //     console.log('Updated. Result:\n' + JSON.stringify(value, null, 2));
-    //   })
-    //   .catch(err => console.error(err))
+    const json = await response.json()
+
+    console.log('Updated. Result:\n' + JSON.stringify(json, null, 2));
   }
 
   /**

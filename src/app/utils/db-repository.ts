@@ -47,7 +47,7 @@ export class DbRepository {
 
     await repo.runMigrations();
 
-    repo.beforeClose();
+    // repo.beforeClose();
 
     return repo;
   }
@@ -89,10 +89,10 @@ export class DbRepository {
 
     const result = this.db.exec('select * from simulacao');
 
-    if (result.length === 0)
+    if (!Array.isArray(result))
       throw new Error('simulacao não encontrada');
 
-    return this.parseSqlResultToObj(result)[0];
+    return this.parseSqlResultToObj(result)[0] || [];
   }
 
   public async getSimulacao(id: string) {

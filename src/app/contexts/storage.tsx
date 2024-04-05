@@ -56,9 +56,7 @@ export function StorageProvider(props: any) {
     if (!isAuthOk)
       throw new Error('you must login on gdrive')
 
-    const dump = await DbRepository.exportLocalDump();
-
-    updateGDrive(dump || '');
+    updateGDrive();
 
     console.log('doGDriveSave end');
     setIsGDriveSaveLoading(false);
@@ -80,23 +78,34 @@ export function StorageProvider(props: any) {
 
     const file = await GDriveUtil.getFirstFileByName(GDriveUtil.DB_FILE_NAME);
 
+    console.log("file", file);
+
     if (file) {
       const fileData = await GDriveUtil.getFileById(file.id);
 
-      await DbRepository.persistLocalDump(fileData?.body);
+
+      const dumpUnescape = atob(fileData?.body || '');
+      const dump = decodeURIComponent(escape(dumpUnescape));
+
+      await DbRepository.persistLocalDump(dump);
       await startStorage()
     }
   }
 
-  async function updateGDrive(dump: string) {
+  async function updateGDrive() {
+    const dump = await DbRepository.exportLocalDump();
+
+    const dumpEscape = unescape(encodeURIComponent(dump || ''));
+
+    const baseDump = btoa(dumpEscape)
     console.info('updateGDrive');
 
     const file = await GDriveUtil.getFirstFileByName(GDriveUtil.DB_FILE_NAME);
 
     if (file) {
-      await GDriveUtil.updateFile(file.id, dump);
+      await GDriveUtil.updateFile(file.id, baseDump);
     } else {
-      await GDriveUtil.createFile(GDriveUtil.DB_FILE_NAME, dump);
+      await GDriveUtil.createFile(GDriveUtil.DB_FILE_NAME, baseDump);
     }
   }
 
