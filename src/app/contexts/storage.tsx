@@ -9,11 +9,15 @@ import { DbRepository } from "../utils/db-repository";
 interface StorageProviderContext {
   repository: DbRepository
   isDbOk: boolean
+  doGDriveSave: () => void
+  doGDriveLoad: () => void
 }
 
 const StorageContext = createContext<StorageProviderContext>({
   repository: {} as any,
   isDbOk: false,
+  doGDriveSave: () => { },
+  doGDriveLoad: () => { },
 });
 
 export enum AvailableCollections {
@@ -30,11 +34,36 @@ export function StorageProvider(props: any) {
     startStorage();
   }, []);
 
-  useEffect(() => {
-    if (isAuthOk) {
-      loadGDrive();
-    }
-  }, [isAuthOk]);
+  async function startStorage() {
+    console.log('startStorage');
+    const repository = await DbRepository.create();
+
+    setRepository(repository);
+    setIsDbOk(true);
+    console.log('startStorage isDbOk');
+  }
+
+  async function doGDriveSave() {
+    console.log('doGDriveSave start');
+
+    if (!isAuthOk)
+      throw new Error('you must login on gdrive')
+
+    const dump = await DbRepository.exportLocalDump();
+
+    updateGDrive(dump || '');
+
+    console.log('doGDriveSave end');
+  }
+
+  async function doGDriveLoad() {
+    console.log('doGDriveLoad start');
+    if (!isAuthOk)
+      throw new Error('you must login on gdrive')
+
+    await loadGDrive();
+    console.log('doGDriveLoad end');
+  }
 
   async function loadGDrive() {
     console.log('loadGDrive');
@@ -44,17 +73,21 @@ export function StorageProvider(props: any) {
     if (file) {
       const fileData = await GDriveUtil.getFileById(file.id);
 
-      await startStorage(JSON.parse(fileData?.body || ''))
+      await DbRepository.persistLocalDump(fileData?.body);
+      await startStorage()
     }
   }
 
-  async function startStorage(data?: any) {
-    console.log('startStorage');
-    const repository = await DbRepository.create(data);
+  async function updateGDrive(dump: string) {
+    console.info('updateGDrive');
 
-    setRepository(repository);
-    setIsDbOk(true);
-    console.log('startStorage isDbOk');
+    const file = await GDriveUtil.getFirstFileByName(GDriveUtil.DB_FILE_NAME);
+
+    if (file) {
+      await GDriveUtil.updateFile(file.id, dump);
+    } else {
+      await GDriveUtil.createFile(GDriveUtil.DB_FILE_NAME, dump);
+    }
   }
 
   return (
@@ -62,6 +95,8 @@ export function StorageProvider(props: any) {
       value={{
         repository,
         isDbOk,
+        doGDriveSave,
+        doGDriveLoad,
       }}
       {...props} />
   )

@@ -9,6 +9,7 @@ const AuthContext = createContext({
   doLogout: () => { },
   isLoadingAuth: true,
   isAuthOk: false,
+  authError: null,
 })
 
 // TODO(developer): Set to client ID and API key from the Developer Console
@@ -33,6 +34,7 @@ export function AuthProvider(props: any) {
   const [isAuthOk, setIsAuthOk] = useState(false);
   const [isLoadingGapi, setIsLoadingGapi] = useState(true);
   const [isLoadingGis, setIsLoadingGis] = useState(true);
+  const [authError, setAuthError] = useState<any>(null);
 
   useEffect(() => {
     createGDrive();
@@ -57,8 +59,13 @@ export function AuthProvider(props: any) {
   function createGDrive() {
     console.info("createGDrive");
 
-    gisLoaded();
-    gapi.load('client', initializeGapiClient);
+    try {
+      gisLoaded();
+      gapi.load('client', initializeGapiClient);
+    } catch (ex) {
+      console.error('Provavel sem internet.', ex)
+      setAuthError(ex);
+    }
   }
 
 
@@ -142,6 +149,7 @@ export function AuthProvider(props: any) {
         doLogout,
         isLoadingAuth,
         isAuthOk,
+        authError,
       }}
       {...props}
     />

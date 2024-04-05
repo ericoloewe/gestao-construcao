@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { useAuth } from "../contexts/auth";
+import { useStorage } from "../contexts/storage";
+import { Loader } from "./loader";
 
 const pages = [
   {
@@ -21,7 +23,7 @@ export function Header() {
   const [show, setShow] = useState(false);
   const pathname = usePathname();
 
-  return <header className="navbar navbar-expand-md bg-body-tertiary">
+  return <header className="navbar navbar-expand-lg bg-body-tertiary">
     <div className="container-fluid">
       <Link
         href="/"
@@ -51,9 +53,16 @@ export function Header() {
 
 function AuthButton() {
   const { doAuth, doLogout, isLoadingAuth, isAuthOk } = useAuth();
+  const { doGDriveSave, doGDriveLoad } = useStorage();
 
   if (isAuthOk)
-    return <button className="btn btn-outline-success" type="button" onClick={doLogout}>Sair</button>
+    return (
+      <div className="d-flex justify-content-center mb-lg-0 mb-2">
+        <button className="btn btn-outline-success btn-sm me-2" type="button" onClick={doGDriveLoad}>Carregar do drive</button>
+        <button className="btn btn-outline-success btn-sm me-2" type="button" onClick={doGDriveSave}>Salvar no drive</button>
+        <button className="btn btn-outline-success btn-sm me-2" type="button" onClick={doLogout}>Sair</button>
+      </div>
+    )
   else
-    return isLoadingAuth ? <div>Loading...</div> : <button className="btn btn-outline-success" type="button" onClick={doAuth}>Entrar</button>;
+    return isLoadingAuth ? <Loader className="text-success" /> : <button className="btn btn-outline-success" type="button" onClick={doAuth}>Entrar</button>;
 }

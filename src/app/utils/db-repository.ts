@@ -5,7 +5,6 @@ import BigNumber from 'bignumber.js';
 
 let SQL: import('sql.js').SqlJsStatic
 
-const DB_NAME = 'gestao-construcao.settings.db';
 
 export interface Simulacao {
   id: BigNumber
@@ -23,9 +22,10 @@ export interface Simulacao {
 }
 
 export class DbRepository {
+  public static readonly DB_NAME = 'gestao-construcao.settings.db';
   private constructor(private db: import('sql.js').Database) { }
 
-  public static async create(data?: any) {
+  public static async create() {
     if (SQL == null) {
       SQL = await initSqlJs({
         // Fetch sql.js wasm file from CDN
@@ -34,7 +34,8 @@ export class DbRepository {
       })
     }
 
-    const localDump = localStorage.getItem(DB_NAME);
+    let data: any;
+    const localDump = await DbRepository.exportLocalDump();
 
     if (data == null && localDump != null) {
       data = Buffer.from(localDump, 'utf16le');
@@ -51,51 +52,21 @@ export class DbRepository {
     return repo;
   }
 
-
-  private beforeClose() {
-    const beforeUnload = (e: any) => {
-      const message = "Ter certeza que deseja sair?";
-      const event = e || window.event;
-
-      // For IE and Firefox
-      if (event) {
-        event.returnValue = message;
-      }
-
-      this.persistDb();
-
-      // For Safari
-      return message;
-    };
-
-    window.addEventListener("beforeunload", beforeUnload);
+  public static async persistLocalDump(dump?: string) {
+    await Promise.resolve();
+    localStorage.setItem(DbRepository.DB_NAME, dump || '');
   }
 
-  public export() {
-    return this.db.export();
+  public static async exportLocalDump() {
+    await Promise.resolve();
+    return localStorage.getItem(DbRepository.DB_NAME);
   }
 
   public async persistDb() {
-    await Promise.resolve();
+    const dump = await this.exportDump();
 
-    const exp = this.export();
-    const dump = Buffer.from(exp).toString('utf16le');
-
-    localStorage.setItem(DB_NAME, dump);
-
+    await DbRepository.persistLocalDump(dump)
     console.info("persistDb ok");
-  }
-
-  private async updateGDrive(dump: string) {
-    console.info('updateGDrive');
-
-    const file = await GDriveUtil.getFirstFileByName(GDriveUtil.DB_FILE_NAME);
-
-    if (file) {
-      await GDriveUtil.updateFile(file.id, dump);
-    } else {
-      await GDriveUtil.createFile(GDriveUtil.DB_FILE_NAME, dump);
-    }
   }
 
   public async save(data: any) {
@@ -187,6 +158,32 @@ export class DbRepository {
     this.db.exec(command, params);
 
     return this.getSimulacao(data.id);
+  }
+
+  private beforeClose() {
+    const beforeUnload = (e: any) => {
+      const message = "Ter certeza que deseja sair?";
+      const event = e || window.event;
+
+      // For IE and Firefox
+      if (event) {
+        event.returnValue = message;
+      }
+
+      this.persistDb();
+
+      // For Safari
+      return message;
+    };
+
+    window.addEventListener("beforeunload", beforeUnload);
+  }
+
+  private async exportDump() {
+    await Promise.resolve();
+    const exp = this.db.export();
+    const dump = Buffer.from(exp).toString('utf16le');
+    return dump;
   }
 
   private async runMigrations() {

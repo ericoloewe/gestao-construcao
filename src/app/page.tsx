@@ -34,16 +34,18 @@ function Home() {
 
   return (
     <main className="main container">
-      {simulacoes.map(x => (
-        <div key={x.id.toNumber()} className="card">
-          <div className="card-body">
-            <h5 className="card-title">{x.titulo}</h5>
-            <h6 className="card-subtitle mb-2 text-body-secondary">Custo Total Terreno: R$ {x.valorTotal?.toFormat(2)}</h6>
-            <p className="card-text">Area terreno: {x.area?.toNumber()} m²</p>
-            <Link href={`/simular?sim=${x.id}`} className="btn btn-secondary">Ver simulação</Link>
+      <section className="cards d-flex flex-wrap justify-content-center justify-content-lg-start">
+        {simulacoes.map(x => (
+          <div key={x.id.toNumber()} className="card m-3">
+            <div className="card-body">
+              <h5 className="card-title">{x.titulo}</h5>
+              <h6 className="card-subtitle mb-2 text-body-secondary">Custo Total Terreno: R$ {x.valorTotal?.toFormat(2)}</h6>
+              <p className="card-text">Area terreno: {x.area?.toNumber()} m²</p>
+              <Link href={`/simular?sim=${x.id}`} className="btn btn-secondary">Ver simulação</Link>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </section>
     </main>
   );
 
