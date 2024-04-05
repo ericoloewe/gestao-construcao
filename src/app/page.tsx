@@ -10,10 +10,12 @@ import { useStorage } from "./contexts/storage";
 import { Simulacao } from "./utils/db-repository";
 import Link from "next/link";
 import { SimuladorUtil } from "./utils/simulador";
+import { Loader } from "./components/loader";
 
 function Home() {
   const { isDbOk, repository } = useStorage();
 
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [simulacoes, setSimulacoes] = useState<Simulacao[]>([]);
 
   useEffect(() => {
@@ -30,22 +32,27 @@ function Home() {
     console.log(result);
 
     setSimulacoes(result);
+    setIsLoading(false);
   }
 
   return (
     <main className="main container">
-      <section className="cards d-flex flex-wrap justify-content-center justify-content-lg-start">
-        {simulacoes.map(x => (
-          <div key={x.id.toNumber()} className="card m-3">
-            <div className="card-body">
-              <h5 className="card-title">{x.titulo}</h5>
-              <h6 className="card-subtitle mb-2 text-body-secondary">Custo Total Terreno: R$ {x.valorTotal?.toFormat(2)}</h6>
-              <p className="card-text">Area terreno: {x.area?.toNumber()} m²</p>
-              <Link href={`/simular?sim=${x.id}`} className="btn btn-secondary">Ver simulação</Link>
-            </div>
-          </div>
-        ))}
-      </section>
+      {isLoading
+        ? (<section className="d-flex justify-content-center m-5"><Loader /></section>)
+        : (
+          <section className="cards d-flex flex-wrap justify-content-center justify-content-lg-start">
+            {simulacoes.map(x => (
+              <div key={x.id.toNumber()} className="card m-3">
+                <div className="card-body">
+                  <h5 className="card-title">{x.titulo}</h5>
+                  <h6 className="card-subtitle mb-2 text-body-secondary">Custo Total Terreno: R$ {x.valorTotal?.toFormat(2)}</h6>
+                  <p className="card-text">Area terreno: {x.area?.toNumber()} m²</p>
+                  <Link href={`/simular?sim=${x.id}`} className="btn btn-secondary">Ver simulação</Link>
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
     </main>
   );
 
