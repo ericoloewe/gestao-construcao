@@ -27,6 +27,13 @@ export class SimuladorUtil {
       return new BigNumber(0);
   }
 
+  public static custoTotalDeConstrucao(custoObra?: BigNumber, custoProjetos?: BigNumber, custoTerraplanagem?: BigNumber, custoPaisagismo?: BigNumber, outrosCustos?: BigNumber): BigNumber {
+    const custoObraBig = custoObra || new BigNumber(0);
+
+    // @ts-ignore
+    return custoObraBig.plus(custoProjetos || 0).plus(custoTerraplanagem || 0).plus(custoPaisagismo || 0).plus(outrosCustos || 0);
+  }
+
   public static extenso(number?: number | string | BigNumber | null, options?: Options): string {
     if (number instanceof BigNumber)
       number = number?.integerValue()?.toNumber();

@@ -19,6 +19,10 @@ export function CustosConstrucao({ }: CustomProps) {
     setCustoObra(SimuladorUtil.custoObra(areaConstruidaEquivalente, custoCUB, custoHistoricoInterno, custoOrcado, tipoDeCustoEscolhido));
   }, [areaConstruidaEquivalente, custoCUB, custoHistoricoInterno, custoOrcado, tipoDeCustoEscolhido]);
 
+  useEffect(() => {
+    setCustoTotalDeConstrucao(SimuladorUtil.custoTotalDeConstrucao(custoObra, custoProjetos, custoTerraplanagem, custoPaisagismo, outrosCustos));
+  }, [custoObra, custoProjetos, custoTerraplanagem, custoPaisagismo, outrosCustos]);
+
   return (
     <section className="card valor-terreno mb-3">
       <div className="card-header">
