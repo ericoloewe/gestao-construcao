@@ -34,6 +34,11 @@ export class SimuladorUtil {
     return custoObraBig.plus(custoProjetos || 0).plus(custoTerraplanagem || 0).plus(custoPaisagismo || 0).plus(outrosCustos || 0);
   }
 
+  public static mesTerminoObra(mesInicioObra?: BigNumber, duracaoObra?: BigNumber): BigNumber {
+    // @ts-ignore
+    return new BigNumber(0).plus(mesInicioObra || 0).plus(duracaoObra || 0).minus(1);
+  }
+
   public static extenso(number?: number | string | BigNumber | null, options?: Options): string {
     if (number instanceof BigNumber)
       number = number?.integerValue()?.toNumber();

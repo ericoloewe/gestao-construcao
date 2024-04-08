@@ -10,6 +10,7 @@ interface CustomProps {
 }
 
 export function CustosConstrucao({ }: CustomProps) {
+  const [mesTerminoObra, setMesTerminoObra] = useState<BigNumber>();
   const [custoObra, setCustoObra] = useState<BigNumber>();
   const [custoTotalDeConstrucao, setCustoTotalDeConstrucao] = useState<BigNumber>();
   const [tipoDeCustoEscolhido, setTipoDeCustoEscolhido] = useState<TipoCustoConstrucao>();
@@ -22,6 +23,10 @@ export function CustosConstrucao({ }: CustomProps) {
   useEffect(() => {
     setCustoTotalDeConstrucao(SimuladorUtil.custoTotalDeConstrucao(custoObra, custoProjetos, custoTerraplanagem, custoPaisagismo, outrosCustos));
   }, [custoObra, custoProjetos, custoTerraplanagem, custoPaisagismo, outrosCustos]);
+
+  useEffect(() => {
+    setMesTerminoObra(SimuladorUtil.mesTerminoObra(mesInicioObra, duracaoObra))
+  }, [mesInicioObra, duracaoObra]);
 
   return (
     <section className="card valor-terreno mb-3">
@@ -106,7 +111,7 @@ export function CustosConstrucao({ }: CustomProps) {
         </div>
         <div className="mb-3 col-md">
           <label className="form-label">Mês Término Da Obra</label>
-          <h6>{custoTotalDeConstrucao?.toFormat(0)} meses</h6>
+          <h6>{mesTerminoObra?.toFormat(0)} meses</h6>
         </div>
       </div>
     </section>
