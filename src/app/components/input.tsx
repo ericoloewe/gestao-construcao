@@ -17,12 +17,14 @@ export function Input(props: CustomProps) {
   function onChangeInput(event: any) {
     const { value } = event.target;
 
+    const onChangeOrDefault = onChange || function () { };
+
     if (isPercent)
-      onChange(BigNumber(value).div(100));
+      onChangeOrDefault(BigNumber(value).div(100));
     else if (isInputNumber)
-      onChange(BigNumber(value));
+      onChangeOrDefault(BigNumber(value));
     else
-      onChange(value);
+      onChangeOrDefault(value);
   }
 
   const inputValue = isInputNumber && value ? parseNumber(value, { isPercent }) : value || '';
@@ -39,7 +41,7 @@ export function Input(props: CustomProps) {
 }
 
 function parseNumber(value: BigNumber, { isPercent }: any) {
-  if (isNaN(value.toNumber()))
+  if (value == null || isNaN(value.toNumber()))
     return '';
 
   return isPercent ? value.times(100).toNumber() : value.toNumber();

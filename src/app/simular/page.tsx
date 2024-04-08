@@ -10,6 +10,7 @@ import { Layout } from "../shared/layout";
 import { SimuladorProvider, useSimulador } from "./context";
 import { Input } from "../components/input";
 import Link from "next/link";
+import { CustosConstrucao } from "./components/custos-construcao";
 
 function Simulador() {
   const [valorTotalTerreno, setValorTotalTerreno] = useState<BigNumber>();
@@ -34,6 +35,7 @@ function Simulador() {
         </section>
         <Terreno onValorTotalTerrenoChange={setValorTotalTerreno} />
         <CompraTerrenoParcelada valorTotalTerreno={valorTotalTerreno} />
+        <CustosConstrucao />
         <Link href={'/'} className="btn btn-secondary me-2">Voltar ao inicio</Link>
         <button type="button" className="btn btn-primary" onClick={saveAll}>Salvar simulação</button>
       </article>

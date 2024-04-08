@@ -1,7 +1,6 @@
 "use client";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import BigNumber from 'bignumber.js';
-import extenso from "extenso";
 import { Input } from "../../components/input";
 import { useSimulador } from "../context";
 import { SimuladorUtil } from "@/app/utils/simulador";
@@ -61,8 +60,6 @@ export function Terreno({ onValorTotalTerrenoChange }: CustomProps) {
       </div>
       <div className="row mb-3">
         <label className="form-label">Custo Total Terreno</label>
-        {/* <h6>R$ {format(add(add(valor, multiply(valor, add(itbi, escrituraERegistro))), multiply(iptu, divide(mesesAteVender, 12))), 2)}</h6> */}
-        {/* <h6>R$ {(valor + (valor * (itbi + escrituraERegistro)) + (iptu * (mesesAteVender / 12))) || '105.600,00'}</h6> */}
         <h6>R$ {valorTotal?.toFormat(2)}</h6>
         <div className="form-text">{SimuladorUtil.extenso(valorTotal, { mode: 'currency' })}</div>
       </div>

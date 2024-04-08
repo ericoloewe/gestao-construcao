@@ -3,7 +3,7 @@
 import BigNumber from "bignumber.js";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { createContext, useState, useEffect } from "react"
-import { AvailableCollections, useStorage } from "../contexts/storage";
+import { useStorage } from "../contexts/storage";
 import { Simulacao } from "../utils/db-repository";
 
 interface SimuladorContextType extends Simulacao {
@@ -18,6 +18,15 @@ interface SimuladorContextType extends Simulacao {
   setTaxaDeJuros: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
   setMesDeInicio: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
   setPrazo: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
+  setAreaConstruidaTotal: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
+  setAreaConstruidaEquivalente: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
+  setCustoCUB: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
+  setCustoHistoricoInterno: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
+  setCustoOrcado: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
+  setCustoProjetos: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
+  setCustoTerraplanagem: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
+  setCustoPaisagismo: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
+  setOutrosCustos: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
   saveAll: () => {}
 }
 
@@ -33,6 +42,15 @@ const SimuladorContext = createContext<SimuladorContextType>({
   setTaxaDeJuros: () => { },
   setMesDeInicio: () => { },
   setPrazo: () => { },
+  setAreaConstruidaTotal: () => { },
+  setAreaConstruidaEquivalente: () => { },
+  setCustoCUB: () => { },
+  setCustoHistoricoInterno: () => { },
+  setCustoOrcado: () => { },
+  setCustoProjetos: () => { },
+  setCustoTerraplanagem: () => { },
+  setCustoPaisagismo: () => { },
+  setOutrosCustos: () => { },
   saveAll: () => { },
 } as any)
 
@@ -49,6 +67,15 @@ export function SimuladorProvider(props: any) {
   const [taxaDeJuros, setTaxaDeJuros] = useState<BigNumber>();
   const [mesDeInicio, setMesDeInicio] = useState<BigNumber>();
   const [prazo, setPrazo] = useState<BigNumber>();
+  const [areaConstruidaTotal, setAreaConstruidaTotal] = useState<BigNumber>();
+  const [areaConstruidaEquivalente, setAreaConstruidaEquivalente] = useState<BigNumber>();
+  const [custoCUB, setCustoCUB] = useState<BigNumber>();
+  const [custoHistoricoInterno, setCustoHistoricoInterno] = useState<BigNumber>();
+  const [custoOrcado, setCustoOrcado] = useState<BigNumber>();
+  const [custoProjetos, setCustoProjetos] = useState<BigNumber>();
+  const [custoTerraplanagem, setCustoTerraplanagem] = useState<BigNumber>();
+  const [custoPaisagismo, setCustoPaisagismo] = useState<BigNumber>();
+  const [outrosCustos, setOutrosCustos] = useState<BigNumber>();
   const { repository, isDbOk } = useStorage();
 
   useEffect(() => {
@@ -114,6 +141,15 @@ export function SimuladorProvider(props: any) {
         taxaDeJuros, setTaxaDeJuros,
         mesDeInicio, setMesDeInicio,
         prazo, setPrazo,
+        areaConstruidaTotal, setAreaConstruidaTotal,
+        areaConstruidaEquivalente, setAreaConstruidaEquivalente,
+        custoCUB, setCustoCUB,
+        custoHistoricoInterno, setCustoHistoricoInterno,
+        custoOrcado, setCustoOrcado,
+        custoProjetos, setCustoProjetos,
+        custoTerraplanagem, setCustoTerraplanagem,
+        custoPaisagismo, setCustoPaisagismo,
+        outrosCustos, setOutrosCustos,
         saveAll,
       }}
       {...props}

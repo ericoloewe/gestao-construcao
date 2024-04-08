@@ -1,6 +1,5 @@
 import moment from 'moment';
 import initSqlJs from 'sql.js';
-import { GDriveUtil } from './gdrive';
 import BigNumber from 'bignumber.js';
 
 let SQL: import('sql.js').SqlJsStatic
@@ -19,6 +18,15 @@ export interface Simulacao {
   taxaDeJuros?: BigNumber
   mesDeInicio?: BigNumber
   prazo?: BigNumber
+  areaConstruidaTotal?: BigNumber
+  areaConstruidaEquivalente?: BigNumber
+  custoCUB?: BigNumber
+  custoHistoricoInterno?: BigNumber
+  custoOrcado?: BigNumber
+  custoProjetos?: BigNumber
+  custoTerraplanagem?: BigNumber
+  custoPaisagismo?: BigNumber
+  outrosCustos?: BigNumber
 }
 
 export class DbRepository {
