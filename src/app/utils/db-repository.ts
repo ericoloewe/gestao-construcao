@@ -27,6 +27,8 @@ export interface Simulacao {
   custoTerraplanagem?: BigNumber
   custoPaisagismo?: BigNumber
   outrosCustos?: BigNumber
+  mesInicioObra?: BigNumber
+  duracaoObra?: BigNumber
 }
 
 export class DbRepository {

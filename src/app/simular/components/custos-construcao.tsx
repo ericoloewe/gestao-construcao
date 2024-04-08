@@ -13,7 +13,7 @@ export function CustosConstrucao({ }: CustomProps) {
   const [custoObra, setCustoObra] = useState<BigNumber>();
   const [custoTotalDeConstrucao, setCustoTotalDeConstrucao] = useState<BigNumber>();
   const [tipoDeCustoEscolhido, setTipoDeCustoEscolhido] = useState<TipoCustoConstrucao>();
-  const { areaConstruidaTotal, setAreaConstruidaTotal, areaConstruidaEquivalente, setAreaConstruidaEquivalente, custoCUB, setCustoCUB, custoHistoricoInterno, setCustoHistoricoInterno, custoOrcado, setCustoOrcado, custoProjetos, setCustoProjetos, custoTerraplanagem, setCustoTerraplanagem, custoPaisagismo, setCustoPaisagismo, outrosCustos, setOutrosCustos, } = useSimulador();
+  const { areaConstruidaTotal, setAreaConstruidaTotal, areaConstruidaEquivalente, setAreaConstruidaEquivalente, custoCUB, setCustoCUB, custoHistoricoInterno, setCustoHistoricoInterno, custoOrcado, setCustoOrcado, custoProjetos, setCustoProjetos, custoTerraplanagem, setCustoTerraplanagem, custoPaisagismo, setCustoPaisagismo, outrosCustos, setOutrosCustos, mesInicioObra, setMesDeInicioObra, duracaoObra, setDuracaoObra } = useSimulador();
 
   useEffect(() => {
     setCustoObra(SimuladorUtil.custoObra(areaConstruidaEquivalente, custoCUB, custoHistoricoInterno, custoOrcado, tipoDeCustoEscolhido));
@@ -94,6 +94,20 @@ export function CustosConstrucao({ }: CustomProps) {
         <label className="form-label">Custo total de construção</label>
         <h6>R$ {custoTotalDeConstrucao?.toFormat(2)}</h6>
         <div className="form-text">{SimuladorUtil.extenso(custoTotalDeConstrucao, { mode: 'currency' })}</div>
+      </div>
+      <div className="row">
+        <div className="mb-3 col-md">
+          <label className="form-label">Mês Início Da Obra</label>
+          <Input onChange={setMesDeInicioObra} type="number" min="1" groupSymbolRight="meses" value={mesInicioObra} />
+        </div>
+        <div className="mb-3 col-md">
+          <label className="form-label">Duração Da Obra</label>
+          <Input onChange={setDuracaoObra} type="number" min="1" groupSymbolRight="meses" value={duracaoObra} />
+        </div>
+        <div className="mb-3 col-md">
+          <label className="form-label">Mês Término Da Obra</label>
+          <h6>{custoTotalDeConstrucao?.toFormat(0)} meses</h6>
+        </div>
       </div>
     </section>
   );

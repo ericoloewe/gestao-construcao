@@ -27,6 +27,8 @@ interface SimuladorContextType extends Simulacao {
   setCustoTerraplanagem: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
   setCustoPaisagismo: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
   setOutrosCustos: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
+  setMesDeInicioObra: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
+  setDuracaoObra: React.Dispatch<React.SetStateAction<BigNumber | undefined>>,
   saveAll: () => {}
 }
 
@@ -51,6 +53,8 @@ const SimuladorContext = createContext<SimuladorContextType>({
   setCustoTerraplanagem: () => { },
   setCustoPaisagismo: () => { },
   setOutrosCustos: () => { },
+  setMesDeInicioObra: () => { },
+  setDuracaoObra: () => { },
   saveAll: () => { },
 } as any)
 
@@ -76,6 +80,8 @@ export function SimuladorProvider(props: any) {
   const [custoTerraplanagem, setCustoTerraplanagem] = useState<BigNumber>();
   const [custoPaisagismo, setCustoPaisagismo] = useState<BigNumber>();
   const [outrosCustos, setOutrosCustos] = useState<BigNumber>();
+  const [mesInicioObra, setMesDeInicioObra] = useState<BigNumber>();
+  const [duracaoObra, setDuracaoObra] = useState<BigNumber>();
   const { repository, isDbOk } = useStorage();
 
   useEffect(() => {
@@ -150,6 +156,8 @@ export function SimuladorProvider(props: any) {
         custoTerraplanagem, setCustoTerraplanagem,
         custoPaisagismo, setCustoPaisagismo,
         outrosCustos, setOutrosCustos,
+        mesInicioObra, setMesDeInicioObra,
+        duracaoObra, setDuracaoObra,
         saveAll,
       }}
       {...props}
