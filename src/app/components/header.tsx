@@ -17,6 +17,10 @@ const pages = [
     name: 'Simular nova construção',
     path: '/simular'
   },
+  {
+    name: 'Configurações',
+    path: '/configuracoes'
+  },
 ]
 
 export function Header() {
