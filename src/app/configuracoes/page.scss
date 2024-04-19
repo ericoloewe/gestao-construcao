@@ -6,11 +6,19 @@ article {
   align-items: stretch;
   flex-direction: column;
   gap: 10px;
-  
+  min-height: 50vh;
+
+  &.is-loading {
+    align-items: center;
+  }
+
   @include media-breakpoint-up(md) {
     flex-direction: row;
     justify-content: space-between;
-    align-items: stretch;
+    
+    &.is-loading {
+      justify-content: center;
+    }
   }
 }
 

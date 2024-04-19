@@ -72,6 +72,12 @@ export class DbRepository {
     return localStorage.getItem(DbRepository.DB_NAME);
   }
 
+  public async exportOriginalDump() {
+    await Promise.resolve();
+
+    return this.db.export();
+  }
+
   public async persistDb() {
     const dump = await this.exportDump();
 
