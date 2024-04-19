@@ -39,7 +39,7 @@ function Configuracoes() {
   return (
     <main className="main container mt-3">
       <h1>Configurações da aplicação</h1>
-      <article className={`${isAllLoading && 'is-loading'}`}>
+      <article className={`configs ${isAllLoading && 'is-loading'}`}>
         {isAllLoading
           ? <Loader />
           : (

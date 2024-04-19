@@ -74,7 +74,7 @@ export class DbRepository {
   public async exportOriginalDump() {
     await Promise.resolve();
 
-    return this.exportDump();
+    return this.db.export();
   }
 
   public async persistDb() {
