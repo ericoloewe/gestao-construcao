@@ -11,8 +11,10 @@ interface StorageProviderContext {
   isDbOk: boolean
   isGDriveSaveLoading: boolean
   isGDriveLoadLoading: boolean
-  doGDriveSave: () => void
-  doGDriveLoad: () => void
+  doGDriveSave: () => Promise<void>
+  doGDriveLoad: () => Promise<void>
+  exportOriginalDumpToFileAndDownload: (fileName: string) => Promise<void>
+  importOriginalDumpFromFile: (file?: File) => Promise<void>
 }
 
 const StorageContext = createContext<StorageProviderContext>({
@@ -20,8 +22,10 @@ const StorageContext = createContext<StorageProviderContext>({
   isDbOk: false,
   isGDriveSaveLoading: false,
   isGDriveLoadLoading: false,
-  doGDriveSave: () => { },
-  doGDriveLoad: () => { },
+  doGDriveSave: () => Promise.resolve(),
+  doGDriveLoad: () => Promise.resolve(),
+  exportOriginalDumpToFileAndDownload: () => Promise.resolve(),
+  importOriginalDumpFromFile: () => Promise.resolve(),
 });
 
 export enum AvailableCollections {
@@ -40,13 +44,50 @@ export function StorageProvider(props: any) {
     startStorage();
   }, []);
 
-  async function startStorage() {
+  async function startStorage(data?: ArrayLike<number> | Buffer | null) {
     console.log('startStorage');
-    const repository = await DbRepository.create();
+    setIsDbOk(false);
+
+    const repository = await DbRepository.create(data);
 
     setRepository(repository);
     setIsDbOk(true);
     console.log('startStorage isDbOk');
+
+    return repository;
+  }
+
+  async function exportOriginalDumpToFileAndDownload(fileName: string) {
+    const dump = await repository.exportOriginalDump();
+    const blob = new Blob([dump], { type: "application/vnd.sqlite3" });
+
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+
+    link.download = fileName;
+    link.click();
+  }
+
+  async function importOriginalDumpFromFile(file: File) {
+    await Promise.resolve();
+
+    if (file == null) {
+      alert('Precisa escolher o arquivo primeiro');
+    } else {
+      const fileReader = new FileReader();
+
+      fileReader.onload = async function () {
+        if (fileReader.result == null || typeof (fileReader.result) === 'string')
+          return alert('arquivo invalido')
+
+        const data = new Uint8Array(fileReader.result);
+        const repo = await startStorage(data);
+
+        repo.persistDb();
+      }
+
+      fileReader.readAsArrayBuffer(file);
+    }
   }
 
   async function doGDriveSave() {
@@ -112,6 +153,8 @@ export function StorageProvider(props: any) {
         isGDriveLoadLoading,
         doGDriveSave,
         doGDriveLoad,
+        exportOriginalDumpToFileAndDownload,
+        importOriginalDumpFromFile,
       }}
       {...props} />
   )

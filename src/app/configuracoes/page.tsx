@@ -10,22 +10,26 @@ import { useEnv } from "../contexts/env";
 
 function Configuracoes() {
   const [isLoading, setIsLoading] = useState(false);
-  const { isDbOk, repository } = useStorage();
+  const { isDbOk, exportOriginalDumpToFileAndDownload, importOriginalDumpFromFile } = useStorage();
   const { aplicationName } = useEnv()
+  const [file, setFile] = useState<File>()
+
+  function handleChange(event: any) {
+    setFile(event.target.files[0])
+  }
 
   async function exportToDb() {
     setIsLoading(true);
 
-    const dump = await repository.exportOriginalDump();
+    await exportOriginalDumpToFileAndDownload(`${aplicationName}.db`);
 
-    const blob = new Blob([dump], { type: "application/pdf" });
+    setIsLoading(false);
+  }
 
-    const link = document.createElement('a');
-    link.href = window.URL.createObjectURL(blob);
+  async function importFromDb() {
+    setIsLoading(true);
 
-    const fileName = `${aplicationName}.db`;
-    link.download = fileName;
-    link.click();
+    await importOriginalDumpFromFile(file);
 
     setIsLoading(false);
   }
@@ -45,9 +49,9 @@ function Configuracoes() {
                 <div className="card-body">
                   <div className="mb-3">
                     <label htmlFor="formFile" className="form-label">Escolha um arquivo do tipo .db</label>
-                    <input className="form-control" type="file" id="formFile" accept=".db,.sqlite" />
+                    <input className="form-control" type="file" id="formFile" accept=".db,.sqlite" onChange={handleChange} />
                   </div>
-                  <button type="button" className="btn btn-secondary">Clique para carregar dados de um arquivo</button>
+                  <button type="button" className="btn btn-secondary" onClick={importFromDb}>Clique para carregar dados de um arquivo</button>
                 </div>
               </section>
               <section className="card">

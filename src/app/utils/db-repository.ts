@@ -35,7 +35,7 @@ export class DbRepository {
   public static readonly DB_NAME = 'gestao-construcao.settings.db';
   private constructor(private db: import('sql.js').Database) { }
 
-  public static async create() {
+  public static async create(data?: ArrayLike<number> | Buffer | null) {
     if (SQL == null) {
       SQL = await initSqlJs({
         // Fetch sql.js wasm file from CDN
@@ -44,7 +44,6 @@ export class DbRepository {
       })
     }
 
-    let data: any;
     const localDump = await DbRepository.exportLocalDump();
 
     if (data == null && localDump != null) {
@@ -75,7 +74,7 @@ export class DbRepository {
   public async exportOriginalDump() {
     await Promise.resolve();
 
-    return this.db.export();
+    return this.exportDump();
   }
 
   public async persistDb() {
