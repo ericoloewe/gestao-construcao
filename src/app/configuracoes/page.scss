@@ -1,0 +1,23 @@
+@import "../_bootstrap";
+
+article {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  flex-direction: column;
+  gap: 10px;
+  
+  @include media-breakpoint-up(md) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: stretch;
+  }
+}
+
+.gdrive {
+  .auth-button {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
