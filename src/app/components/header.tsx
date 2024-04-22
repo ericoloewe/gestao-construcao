@@ -1,6 +1,6 @@
 "use client";
 
-import Logo from "./logo.svg";
+import Logo from "../../../public/logo.svg";
 import Link from 'next/link';
 import { usePathname } from "next/navigation";
 import { useState } from "react";
