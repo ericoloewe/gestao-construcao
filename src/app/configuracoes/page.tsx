@@ -31,6 +31,7 @@ function Configuracoes() {
 
     await importOriginalDumpFromFile(file);
 
+    alert('arquivo carregado com sucesso');
     setIsLoading(false);
   }
 
