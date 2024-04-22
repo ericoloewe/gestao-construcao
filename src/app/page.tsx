@@ -37,7 +37,7 @@ function Home() {
 
   return (
     <main className="main container">
-      <section className="d-flex justify-content-center m-5">
+      <section className="home m-5">
         {isLoading
           ? (<Loader />)
           : (
@@ -45,7 +45,7 @@ function Home() {
               ? (<div className="alert alert-info" role="alert">Nenhuma simulação encontrada</div>)
               : (
 
-                <section className="cards d-flex flex-wrap justify-content-center justify-content-lg-start">
+                <section className="cards">
                   {simulacoes.map(x => (
                     <div key={x.id.toNumber()} className="card m-3">
                       <div className="card-body">
