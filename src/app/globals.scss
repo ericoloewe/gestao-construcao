@@ -49,3 +49,19 @@ header {
     height: 50px;
   }
 }
+
+footer {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+  color: #000;
+
+  a {
+    color: #000;
+
+    &:hover {
+      color: rgba(#000, 0.7);
+    }
+  }
+}

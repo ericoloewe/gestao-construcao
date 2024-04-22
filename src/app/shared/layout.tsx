@@ -3,6 +3,7 @@
 import BigNumber from "bignumber.js";
 import { AppProviders } from "../contexts";
 import { Header } from "../components/header";
+import { Footer } from "../components/footer";
 
 BigNumber.config({
   FORMAT: {
@@ -18,6 +19,7 @@ export function Layout({ children }: any) {
     <AppProviders>
       <Header />
       {children}
+      <Footer />
     </AppProviders>
   );
 }
