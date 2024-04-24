@@ -38,7 +38,7 @@ function Configuracoes() {
   const isAllLoading = isLoading || !isDbOk
 
   return (
-    <main className="main container mt-3">
+    <main className="main container my-3">
       <h1>Configurações da aplicação</h1>
       <article className={`configs ${isAllLoading && 'is-loading'}`}>
         {isAllLoading
