@@ -8,12 +8,36 @@ import { AuthButton } from "./auth-button";
 
 const pages = [
   {
-    name: 'Home',
+    name: 'Início',
     path: '/'
   },
   {
-    name: 'Simular nova construção',
-    path: '/simular'
+    name: 'Obras',
+    path: '/obras'
+  },
+  {
+    name: 'Orçamentos',
+    path: '/orcamentos'
+  },
+  {
+    name: 'Clientes',
+    path: '/clientes'
+  },
+  {
+    name: 'Compras',
+    path: '/compras'
+  },
+  {
+    name: 'Fornecedores',
+    path: '/fornecedores'
+  },
+  {
+    name: 'Mão de obra',
+    path: '/mao-de-obra'
+  },
+  {
+    name: 'Relatorios',
+    path: '/relatorios'
   },
   {
     name: 'Configurações',

@@ -6,8 +6,8 @@ import Script from "next/script";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Gestão de construção",
-  description: "Gestão para construção civil",
+  title: "Gestão de obra / construção civil",
+  description: "Nosso sistema de gestão de obras é uma solução completa para otimizar e controlar todos os aspectos do seu projeto de construção. Com recursos como orçamento detalhado, gestão financeira por centro de custo, acompanhamento de obra, integração com outros módulos e portal do cliente, oferecemos uma plataforma abrangente para gerenciar materiais, mão de obra e fornecedores. Além disso, nossa ferramenta permite registrar informações sobre funcionários, facilitando a alocação e documentação necessária. Personalizamos cada implementação para atender às necessidades específicas do seu projeto, garantindo eficiência e sucesso.",
 };
 
 export default function RootLayout({

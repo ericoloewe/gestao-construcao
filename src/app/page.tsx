@@ -39,12 +39,11 @@ function Home() {
     <main className="main container">
       <section className="home m-5">
         {isLoading
-          ? (<Loader />)
+          ? (<section className="cards"><Loader /></section>)
           : (
             simulacoes.length === 0
               ? (<div className="alert alert-info" role="alert">Nenhuma simulação encontrada</div>)
               : (
-
                 <section className="cards">
                   {simulacoes.map(x => (
                     <div key={x.id.toNumber()} className="card m-3">
