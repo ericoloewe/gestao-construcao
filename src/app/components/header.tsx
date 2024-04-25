@@ -43,6 +43,10 @@ const pages = [
     name: 'Configurações',
     path: '/configuracoes'
   },
+  {
+    name: 'Perguntas frequentes',
+    path: '/faq'
+  },
 ]
 
 export function Header() {
