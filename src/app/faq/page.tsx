@@ -54,13 +54,13 @@ function FAQ() {
                 <button className="btn p-4 mb-2 w-100 bg-white fw-medium text-start lh-base rounded-4 border border-primary" onClick={e => setOpened({ ...opened, [x.question]: !opened[x.question] })}>
                   <div className="d-flex justify-content-between">
                     <div>
-                      <h6 className="fs-7 mb-0">{x.question}</h6>
+                      <h6 className="fs-7 mb-0 text-success">{x.question}</h6>
                     </div>
                     <div className="ps-4">
                       <ArrowIcon className="arrow" />
                     </div>
                   </div>
-                  <p className="mw-md mt-4 mb-0 text-secondary">{x.answer}</p>
+                  <p className="mw-md mt-4 mb-0">{x.answer}</p>
                 </button>
               </li>
             ))}
