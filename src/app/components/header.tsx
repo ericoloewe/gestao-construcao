@@ -60,7 +60,7 @@ export function Header() {
         rel="noopener noreferrer"
         className='navbar-brand logo-link d-flex align-items-center'
       >
-        <Logo className="d-inline-block align-text-top" />
+        <Logo className="d-inline-block align-text-top me-1" />
         Dashboard de construção
       </Link>
       <button className="navbar-toggler" type="button" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation" onClick={e => setShow(!show)}>
